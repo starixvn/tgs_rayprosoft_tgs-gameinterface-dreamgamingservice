@@ -565,6 +565,43 @@ internal class GameApiClient : IGameApiClient
         return response["codeId"]!.GetValue<int>() == 0;
     }
 
+    public async ValueTask<bool> UpdateLimitAsync(
+        Uri apiUrl,
+        string apiKey,
+        string agentName,
+        string username,
+        string tableLimit,
+        CancellationToken cancellationToken = default)
+    {
+        var random = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        var token = GetHashMD5($"{agentName}{apiKey}{random}");
+
+        var request = new
+        {
+            token,
+            random,
+            data = tableLimit,
+            member = new { username }
+        };
+
+        var url = new Uri(apiUrl, $"/game/updateLimit/{agentName}");
+
+        var jsonNode = await PostAsync(
+            url,
+            JsonDocument.Parse(JsonSerializer.Serialize(request)),
+            "UpdateLimit",
+            cancellationToken).ConfigureAwait(false);
+
+        var codeId = jsonNode!["codeId"]!.GetValue<int>();
+
+        if (codeId is not 0)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     private static string GetHashMD5(string data)
     {
         using var md5 = MD5.Create();

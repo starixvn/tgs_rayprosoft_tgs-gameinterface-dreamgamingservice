@@ -14,6 +14,7 @@ service  GameInterfaceDreamGamingService{
   rpc PlayerBalance (PlayerBalanceRequest) returns (PlayerBalanceReply);  
   rpc PlayerOnline (PlayerOnlineRequest) returns (PlayerOnlineReply);
   rpc PlayerKick (PlayerKickRequest) returns (BaseReply);
+  rpc PlayerTableLimit (PlayerTableLimitRequest) returns (BaseReply);
   rpc FundIn (FundRequest) returns (FundReply);
   rpc FundOut (FundRequest) returns (FundReply);
   rpc FundStatus(FundStatusRequest) returns (FundStatusReply);  
@@ -53,6 +54,14 @@ message PlayerKickRequest {
 	string api_key = 2;
 	string agent_name = 3;
 	int64 member_id = 4;
+}
+
+message PlayerTableLimitRequest {
+	string api_url = 1;
+	string api_key = 2;
+	string agent_name = 3;
+	string username = 4;
+	string table_limit = 5;
 }
 
 message FundRequest {

@@ -7,9 +7,9 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddDreamGamingServiceCore(
         this IServiceCollection services)
-        => services                        
+        => services
             .AddHttpClient<IGameApiClient, GameApiClient>()
-            .Services            
+            .Services
             .RegisterAllServiceUtilityTypes(
                 Assembly.GetExecutingAssembly(),
                 ServiceLifetime.Transient);

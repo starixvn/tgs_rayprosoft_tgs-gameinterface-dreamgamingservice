@@ -5,15 +5,15 @@
 replicaCount: 1
 
 image:
-  repository: pgtgs/game-gameinterface-dreamgaming-service
+  repository: pgtgs/game-gameinterface-dg-service
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
 imagePullSecrets:
   - name: dockerhub
-nameOverride: "game-gameinterface-dreamgaming-service"
-fullnameOverride: "game-gameinterface-dreamgaming-service"
+nameOverride: "game-gameinterface-dg-service"
+fullnameOverride: "game-gameinterface-dg-service"
 
 serviceAccount:
   # Specifies whether a service account should be created

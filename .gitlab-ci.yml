@@ -1,7 +1,7 @@
 variables:
-  ImageName: pgtgs/game-gameinterface-dreamgaming-service
-  TgsSettingKey: game-gameinterface-dreamgaming-service
-  HelmTemplateFolderName: game-gameinterface-dreamgaming-service
+  ImageName: pgtgs/game-gameinterface-dg-service
+  TgsSettingKey: game-gameinterface-dg-service
+  HelmTemplateFolderName: game-gameinterface-dg-service
   BuildCacheKey: Tgs.GameInterface.DreamGamingService.$CI_PIPELINE_ID
 
 default:

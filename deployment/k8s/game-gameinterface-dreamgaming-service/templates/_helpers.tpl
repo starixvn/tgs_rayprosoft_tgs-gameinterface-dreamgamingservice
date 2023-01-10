@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "game-gameinterface-dreamgaming-service.name" -}}
+{{- define "game-gameinterface-dg-service.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "game-gameinterface-dreamgaming-service.fullname" -}}
+{{- define "game-gameinterface-dg-service.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "game-gameinterface-dreamgaming-service.chart" -}}
+{{- define "game-gameinterface-dg-service.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "game-gameinterface-dreamgaming-service.labels" -}}
-helm.sh/chart: {{ include "game-gameinterface-dreamgaming-service.chart" . }}
-{{ include "game-gameinterface-dreamgaming-service.selectorLabels" . }}
+{{- define "game-gameinterface-dg-service.labels" -}}
+helm.sh/chart: {{ include "game-gameinterface-dg-service.chart" . }}
+{{ include "game-gameinterface-dg-service.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,21 +45,21 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "game-gameinterface-dreamgaming-service.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "game-gameinterface-dreamgaming-service.name" . }}
+{{- define "game-gameinterface-dg-service.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "game-gameinterface-dg-service.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-app: {{ include "game-gameinterface-dreamgaming-service.name" . }}
+app: {{ include "game-gameinterface-dg-service.name" . }}
 tgs.kind: game
 tgs.game.kind: gameinterface
-tgs.gameprovider.kind: dreamgaming
+tgs.gameprovider.kind: dgtf
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "game-gameinterface-dreamgaming-service.serviceAccountName" -}}
+{{- define "game-gameinterface-dg-service.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "game-gameinterface-dreamgaming-service.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "game-gameinterface-dg-service.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

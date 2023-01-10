@@ -79,15 +79,16 @@ public interface IGameApiClient
         string apiKey,
         string agentName,
         CancellationToken cancellationToken = default);
+
     /// <summary>
     /// 游戏注单解析入口
     /// </summary>
     ValueTask<string> GetGameResultAsync(
-        Uri videoGameApiUrl, 
+        Uri videoGameApiUrl,
         string agentName,
         string language,
         string id,
-        CancellationToken cancellationToken = default);    
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 标记已抓取注单
@@ -116,5 +117,13 @@ public interface IGameApiClient
         string apiKey,
         string agentName,
         long memberId,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<bool> UpdateLimitAsync(
+        Uri apiUrl,
+        string apiKey,
+        string agentName,
+        string username,
+        string tableLimit,
         CancellationToken cancellationToken = default);
 }

@@ -14,6 +14,7 @@ internal class GameInterfaceDreamGamingGrpcService : GameInterfaceDreamGamingSer
     private readonly ICommandService<PlayerCreateCommand> _playerCreateService;
     private readonly IGetService<PlayerBalanceQuery, PlayerBalanceResult> _playerBalanceService;
     private readonly ICommandService<PlayerKickCommand> _playerKickService;
+    private readonly IGetService<PlayerTableLimitCommand, bool> _playerTableLimitService;
     private readonly IQueryService<PlayerOnlineQuery, PlayerOnlineResult> _playerOnlineService;
     private readonly IGetService<GameUrlQuery, string?> _gameUrlService;
     private readonly IQueryService<GameHistorySettledQuery, GameHistorySettledResult> _gameHistorySettledService;
@@ -27,6 +28,7 @@ internal class GameInterfaceDreamGamingGrpcService : GameInterfaceDreamGamingSer
         ICommandService<PlayerCreateCommand> playerCreateService,
         IGetService<PlayerBalanceQuery, PlayerBalanceResult> playerBalanceService,
         ICommandService<PlayerKickCommand> playerKickService,
+        IGetService<PlayerTableLimitCommand, bool> playerTableLimitService,
         IQueryService<PlayerOnlineQuery, PlayerOnlineResult> playerOnlineService,
         IGetService<GameUrlQuery, string?> gameUrlService,
         IQueryService<GameHistorySettledQuery, GameHistorySettledResult> gameHistorySettledService,
@@ -39,6 +41,7 @@ internal class GameInterfaceDreamGamingGrpcService : GameInterfaceDreamGamingSer
         _playerCreateService = playerCreateService ?? throw new ArgumentNullException(nameof(playerCreateService));
         _playerBalanceService = playerBalanceService ?? throw new ArgumentNullException(nameof(playerBalanceService));
         _playerKickService = playerKickService ?? throw new ArgumentNullException(nameof(playerKickService));
+        _playerTableLimitService = playerTableLimitService ?? throw new ArgumentNullException(nameof(playerTableLimitService));
         _playerOnlineService = playerOnlineService ?? throw new ArgumentNullException(nameof(playerOnlineService));
         _gameUrlService = gameUrlService ?? throw new ArgumentNullException(nameof(gameUrlService));
         _gameHistorySettledService = gameHistorySettledService ?? throw new ArgumentNullException(nameof(gameHistorySettledService));
@@ -176,6 +179,25 @@ internal class GameInterfaceDreamGamingGrpcService : GameInterfaceDreamGamingSer
         return new BaseReply()
         {
             Status = true
+        };
+    }
+
+    public override async Task<BaseReply> PlayerTableLimit(PlayerTableLimitRequest request, ServerCallContext context)
+    {
+        var command = new PlayerTableLimitCommand(
+            ApiUrl: new(request.ApiUrl),
+            ApiKey: request.ApiKey,
+            AgentName: request.AgentName,
+            Username: request.Username,
+            TableLimit: request.TableLimit);
+
+        var result = await _playerTableLimitService
+            .GetAsync(command, cancellationToken: context.CancellationToken)
+            .ConfigureAwait(false);
+
+        return new BaseReply()
+        {
+            Status = result
         };
     }
 

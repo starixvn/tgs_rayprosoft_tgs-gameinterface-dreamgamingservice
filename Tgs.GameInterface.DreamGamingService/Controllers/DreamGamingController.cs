@@ -387,6 +387,39 @@ public class DreamGamingController : ControllerBase
                 cancellationToken: HttpContext.RequestAborted);
 
     /// <summary>
+    /// Players the table limit asynchronous.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    /// <param name="source">The source.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Post
+    ///
+    ///         {
+    ///             "apiUrl": "https://api.dg0.co/",
+    ///             "apiKey": "d39da9da731b427b9349b80d9d97f2e4",
+    ///             "agentName": "DGTE0105IH",
+    ///             "username": "4ucmqplxb029",
+    ///             "tablelimit": "A"
+    ///         }
+    /// </remarks>
+    [HttpPost("player/tablelimit", Name = "PlayerTableLimit")]
+    public ValueTask<bool> PlayerTableLimitAsync(
+        [FromServices] IGetService<PlayerTableLimitCommand, bool> service,
+        PlayerTableLimitViewModel source)
+        => service
+            .GetAsync(
+                query: new PlayerTableLimitCommand(
+                    source.ApiUrl,
+                    source.ApiKey,
+                    source.AgentName,
+                    source.Username,
+                    source.TableLimit),
+                cancellationToken: HttpContext.RequestAborted);
+
+    /// <summary>
     /// Games the history mark asynchronous.
     /// </summary>
     /// <param name="service">The service.</param>

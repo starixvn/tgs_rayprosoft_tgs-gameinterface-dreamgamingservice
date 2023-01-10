@@ -281,7 +281,7 @@ internal class GameInterfaceDreamGamingGrpcService : GameInterfaceDreamGamingSer
                     ExternalRoundId = gameHistorySettled.ExternalRoundId,
                     IsClosed = gameHistorySettled.IsClosed,
                     ExternalCreatedOn = gameHistorySettled.ExternalCreatedOn.ToTimestamp(),
-                    ExternalClosedOn = gameHistorySettled.ExternalClosedOn.ToTimestamp(),
+                    ExternalClosedOn = gameHistorySettled.ExternalClosedOn.GetValueOrDefault(DateTimeOffset.MinValue).ToTimestamp(),
                     Bet = gameHistorySettled.Bet,
                     ValidBet = gameHistorySettled.ValidBet,
                     PlayerWinLoss = gameHistorySettled.PlayerWinLoss,

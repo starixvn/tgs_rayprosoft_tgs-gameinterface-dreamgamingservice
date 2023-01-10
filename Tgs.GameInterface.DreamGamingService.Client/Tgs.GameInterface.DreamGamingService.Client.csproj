@@ -8,7 +8,7 @@
 
 
 	<PropertyGroup>
-		<Version>0.0.2</Version>
+		<Version>0.0.3</Version>
 		<Authors>Raypro</Authors>
 		<Description>Tgs GameInterface DreamGaming Client</Description>
 		<PackageProjectUrl>https://gitlab.com/rayprosoft/tgs-gameinterface-dreamgamingservice</PackageProjectUrl>

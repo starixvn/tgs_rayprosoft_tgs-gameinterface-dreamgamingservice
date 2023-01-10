@@ -6,7 +6,7 @@ public record GetReportResult
     public string ExternalRoundId { get; init; } = default!;
     public bool IsClosed { get; init; }
     public DateTimeOffset ExternalCreatedOn { get; init; }
-    public DateTimeOffset ExternalClosedOn { get; init; }
+    public DateTimeOffset? ExternalClosedOn { get; init; }
     public decimal Bet { get; init; }
     public decimal? ValidBet { get; init; }
     public decimal? Settle { get; init; }

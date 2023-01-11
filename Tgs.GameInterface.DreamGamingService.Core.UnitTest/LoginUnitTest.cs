@@ -27,7 +27,7 @@ public class LoginUnitTest
 
         var sut = new GameApiClient(fakeHttpClient, fakeLog);
 
-        _ = await sut
+        var actual = await sut
             .LoginAsync(
                 apiUrl: apiUrl,
                 apiKey: apiKey,
@@ -37,5 +37,7 @@ public class LoginUnitTest
                 isMobile: false,
                 lang: "en")
             .ConfigureAwait(false);
+
+        Assert.AreEqual("https://login.maidaosha.com/pc-index/direct1.html?token=05b4cf398a30421bb2cbfb00f2a817b1&language=en", actual);
     }
 }

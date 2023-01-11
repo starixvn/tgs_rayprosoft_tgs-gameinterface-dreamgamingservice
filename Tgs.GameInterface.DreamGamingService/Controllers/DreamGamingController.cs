@@ -149,7 +149,7 @@ public class DreamGamingController : ControllerBase
     ///             "password": "DGTFP@ssw0rd",
     ///             "currencyName": "CNY",
     ///             "tableLimit": "A",
-    ///             "winLimit": "1000"
+    ///             "winLimit": 0
     ///         }
     /// </remarks>
     [HttpPost("player/create", Name = "PlayerCreate")]

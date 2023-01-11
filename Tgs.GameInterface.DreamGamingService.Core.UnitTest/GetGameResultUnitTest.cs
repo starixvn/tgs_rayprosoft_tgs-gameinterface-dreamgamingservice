@@ -34,6 +34,7 @@ public class GetGameResultUnitTest
                 id: id)            
             .ConfigureAwait(false);
 
+        Assert.IsFalse(string.IsNullOrWhiteSpace(actual));
         Assert.AreEqual("https://ag.dg66.info/ag/result/result.html?language=en&agentFix=3213&id=13540803433", actual);        
     }
 }

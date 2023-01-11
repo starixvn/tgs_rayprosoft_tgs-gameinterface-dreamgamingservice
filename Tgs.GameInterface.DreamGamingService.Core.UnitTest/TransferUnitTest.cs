@@ -27,7 +27,7 @@ public class TransferUnitTest
 
         var sut = new GameApiClient(fakeHttpClient, fakeLog);
 
-        _ = await sut
+        var actual = await sut
             .TransferAsync(
                 apiUrl: apiUrl,
                 apiKey: apiKey,
@@ -36,6 +36,11 @@ public class TransferUnitTest
                 refTransactionCode: refTransactionCode,
                 amount: amount)
             .ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual(1000M, actual.Balance);
+        Assert.AreEqual("7a7147218501000000010000af506b2c", actual.RefTransactionCode);
+        Assert.AreEqual("7a7147218501000000010000af506b2c", actual.TransactionId);
     }
     [TestMethod]
     public async Task 會員取款成功()
@@ -57,7 +62,7 @@ public class TransferUnitTest
 
         var sut = new GameApiClient(fakeHttpClient, fakeLog);
 
-        _ = await sut
+        var actual = await sut
             .TransferAsync(
                 apiUrl: apiUrl,
                 apiKey: apiKey,
@@ -66,5 +71,10 @@ public class TransferUnitTest
                 refTransactionCode: refTransactionCode,
                 amount: amount)
             .ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual(900M, actual.Balance);
+        Assert.AreEqual("7a3f35bf271247b998f6750d448ed757", actual.RefTransactionCode);
+        Assert.AreEqual("7a3f35bf271247b998f6750d448ed757", actual.TransactionId);
     }
 }

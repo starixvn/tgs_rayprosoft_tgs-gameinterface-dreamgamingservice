@@ -26,12 +26,16 @@ public class GetBalanceUnitTest
 
         var sut = new GameApiClient(fakeHttpClient, fakeLog);
 
-        _ = await sut
+        var actual = await sut
             .GetBalanceAsync(
                 apiUrl: apiUrl,
                 apiKey: apiKey,
                 agentName: agentName,
                 username: username)
             .ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual(1000M, actual.Balance);
+        Assert.IsTrue(actual.IsPlayerExist);
     }
 }

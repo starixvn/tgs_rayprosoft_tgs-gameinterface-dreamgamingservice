@@ -287,7 +287,8 @@ internal class GameInterfaceDreamGamingGrpcService : GameInterfaceDreamGamingSer
                     PlayerWinLoss = gameHistorySettled.PlayerWinLoss,
                     Turnover = gameHistorySettled.Turnover,
                     Settle = gameHistorySettled.Settle,
-                    AdditionalData = gameHistorySettled.AdditionalData
+                    AdditionalData = gameHistorySettled.AdditionalData,
+                    ExternalGameId = gameHistorySettled.ExternalGameId,
                 });
             }
         }

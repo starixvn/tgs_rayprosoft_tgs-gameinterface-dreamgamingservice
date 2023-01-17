@@ -51,7 +51,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 app: {{ include "game-gameinterface-dg-service.name" . }}
 tgs.kind: game
 tgs.game.kind: gameinterface
-tgs.gameprovider.kind: dgtf
+tgs.gameprovider.kind: dg
 {{- end }}
 
 {{/*

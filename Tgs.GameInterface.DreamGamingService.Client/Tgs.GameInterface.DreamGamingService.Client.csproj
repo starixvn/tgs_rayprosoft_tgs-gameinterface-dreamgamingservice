@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -8,7 +8,7 @@
 
 
 	<PropertyGroup>
-		<Version>0.0.5</Version>
+		<Version>0.0.6</Version>
 		<Authors>Raypro</Authors>
 		<Description>Tgs GameInterface DreamGaming Client</Description>
 		<PackageProjectUrl>https://gitlab.com/rayprosoft/tgs-gameinterface-dreamgamingservice</PackageProjectUrl>
@@ -16,11 +16,6 @@
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>Tgs GameInterface DreamGamingService</PackageTags>
 	</PropertyGroup>
-
-
-	<ItemGroup>
-	  <None Remove="gameinterfacedreamgamingservice.proto" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.49.0" />
@@ -33,6 +28,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Protobuf Include="gameinterfacedreamgamingservice.proto" GrpcServices="Client" />
+	  <Protobuf Include="..\Tgs.GameInterface.DreamGamingService\Protos\gameinterfacedreamgamingservice.proto" GrpcServices="Client">
+	    <Link>gameinterfacedreamgamingservice.proto</Link>
+	  </Protobuf>
 	</ItemGroup>
 </Project>

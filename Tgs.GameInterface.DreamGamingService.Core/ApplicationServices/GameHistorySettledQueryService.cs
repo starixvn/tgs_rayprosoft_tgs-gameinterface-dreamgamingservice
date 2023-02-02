@@ -32,7 +32,7 @@ internal class GameHistorySettledQueryService : IQueryService<GameHistorySettled
         foreach (var bettingHistoryBet in bettingHistoryBets)
         {
             var playerWinLoss = bettingHistoryBet.Settle - bettingHistoryBet.Bet;
-            if (!bettingHistoryBet.IsVoid)
+            if (bettingHistoryBet.IsVoid)
             {
                 playerWinLoss = 0;
             }

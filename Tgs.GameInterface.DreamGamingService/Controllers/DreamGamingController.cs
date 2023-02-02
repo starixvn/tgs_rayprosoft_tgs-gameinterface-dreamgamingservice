@@ -297,6 +297,7 @@ public class DreamGamingController : ControllerBase
                 PlayerCode: gameRecord.PlayerCode,
                 ExternalRoundId: gameRecord.ExternalRoundId,
                 IsClosed: gameRecord.IsClosed,
+                IsVoid: gameRecord.IsVoid,
                 ExternalCreatedOn: gameRecord.ExternalCreatedOn,
                 ExternalClosedOn: gameRecord.ExternalClosedOn,
                 Bet: gameRecord.Bet,

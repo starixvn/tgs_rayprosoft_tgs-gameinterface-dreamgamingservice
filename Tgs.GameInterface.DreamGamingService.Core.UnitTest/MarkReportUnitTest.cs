@@ -31,9 +31,9 @@ public class MarkReportUnitTest
                 apiUrl: apiUrl,
                 apiKey: apiKey,
                 agentName: agentName,
-                externalRoundIds: externalRoundIds)            
+                externalRoundIds: externalRoundIds)
             .ConfigureAwait(false);
-        
+
         Assert.IsTrue(actual);
     }
 }

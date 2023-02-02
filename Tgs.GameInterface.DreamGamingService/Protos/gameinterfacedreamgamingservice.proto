@@ -150,16 +150,17 @@ message GameHistorySettledReply {
 message GameHistorySettled {
 	string player_code = 1;
     string external_round_id = 2;
-    bool is_closed = 3;    
-	google.protobuf.Timestamp external_created_on = 4;
-	google.protobuf.Timestamp external_closed_on = 5;
-	phoenix.protobuf.DecimalValue bet = 6;
-	phoenix.protobuf.DecimalValue valid_bet = 7;
-	phoenix.protobuf.DecimalValue player_win_loss = 8;
-	phoenix.protobuf.DecimalValue turnover = 9;
-	phoenix.protobuf.DecimalValue settle = 10;
-    string additional_data = 11;
-	string external_game_id = 12;
+	bool is_closed = 3;    
+    bool is_void = 4;    
+	google.protobuf.Timestamp external_created_on = 5;
+	google.protobuf.Timestamp external_closed_on = 6;
+	phoenix.protobuf.DecimalValue bet = 7;
+	phoenix.protobuf.DecimalValue valid_bet = 8;
+	phoenix.protobuf.DecimalValue player_win_loss = 9;
+	phoenix.protobuf.DecimalValue turnover = 10;
+	phoenix.protobuf.DecimalValue settle = 11;
+    string additional_data = 12;
+	string external_game_id = 13;
 }
 
 message GameHistoryDetailReply {

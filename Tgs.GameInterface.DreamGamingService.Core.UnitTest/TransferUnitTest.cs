@@ -42,6 +42,7 @@ public class TransferUnitTest
         Assert.AreEqual("7a7147218501000000010000af506b2c", actual.RefTransactionCode);
         Assert.AreEqual("7a7147218501000000010000af506b2c", actual.TransactionId);
     }
+
     [TestMethod]
     public async Task 會員取款成功()
     {

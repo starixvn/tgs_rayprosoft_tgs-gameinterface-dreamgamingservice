@@ -13,7 +13,7 @@ public class OfflineUnitTest
         var apiUrl = new Uri("https://api.dg0.co/");
         var apiKey = "d39da9da731b427b9349b80d9d97f2e4";
         var agentName = "DGTE0105IH";
-        var memberId = 94030972L;        
+        var memberId = 94030972L;
 
         var url = new Uri(apiUrl, $"/user/offline/{agentName}");
         var response = "{\"codeId\":0,\"token\":\"49d9bbc0dd5a5a419cb8579f1c075754\",\"random\":\"1673079242315\",\"list\":[94030972]}";

@@ -31,14 +31,17 @@ internal class GameHistorySettledQueryService : IQueryService<GameHistorySettled
 
         foreach (var bettingHistoryBet in bettingHistoryBets)
         {
-            var playerWinLoss = 0M;
-            if (bettingHistoryBet.IsClosed)
-                playerWinLoss = bettingHistoryBet.Settle!.Value - bettingHistoryBet.Bet;
+            var playerWinLoss = bettingHistoryBet.Settle - bettingHistoryBet.Bet;
+            if (!bettingHistoryBet.IsVoid)
+            {
+                playerWinLoss = 0;
+            }
 
             yield return new GameHistorySettledResult(
                 PlayerCode: bettingHistoryBet.PlayerCode,
                 ExternalRoundId: bettingHistoryBet.ExternalRoundId,
                 IsClosed: bettingHistoryBet.IsClosed,
+                IsVoid: bettingHistoryBet.IsVoid,
                 ExternalCreatedOn: bettingHistoryBet.ExternalCreatedOn,
                 ExternalClosedOn: bettingHistoryBet.ExternalClosedOn,
                 Bet: bettingHistoryBet.Bet,

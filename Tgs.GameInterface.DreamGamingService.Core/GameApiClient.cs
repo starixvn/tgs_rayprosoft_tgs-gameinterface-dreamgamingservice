@@ -16,7 +16,7 @@ internal class GameApiClient : IGameApiClient
     private readonly HttpClient _client;
     private readonly ILogger<GameApiClient> _logger;
 
-    private readonly Dictionary<int, string> _codeIdDescription = new Dictionary<int, string>
+    private readonly Dictionary<int, string> _codeIdDescription = new()
     {
         {  0, "操作成功" },
         {  1, "参数错误" },
@@ -288,12 +288,7 @@ internal class GameApiClient : IGameApiClient
 
         var codeId = jsonNode!["codeId"]!.GetValue<int>();
 
-        if (codeId is not 0)
-        {
-            return false;
-        }
-
-        return true;
+        return codeId is 0;
     }
 
     public async IAsyncEnumerable<GetReportResult> GetReportAsync(
@@ -313,7 +308,7 @@ internal class GameApiClient : IGameApiClient
         };
 
         var retryPolicy = Policy.HandleResult<JsonNode>(jsonNode
-             => jsonNode["codeId"]!.GetValue<int>() == 405 || jsonNode["codeId"]!.GetValue<int>() == 406)
+             => jsonNode["codeId"]!.GetValue<int>() is 405 or 406)
          .WaitAndRetryAsync(tryCount,
              retryAttempt => TimeSpan.FromSeconds(seconds),
              (response, retryTime, context) =>
@@ -349,7 +344,7 @@ internal class GameApiClient : IGameApiClient
 
         var listArray = jsonNode["list"]!.AsArray();
 
-        if (!listArray.Any())
+        if (listArray is null || !listArray.Any())
             yield break;
 
         var betResults = listArray.Select(x => new GetReportResult
@@ -358,23 +353,25 @@ internal class GameApiClient : IGameApiClient
             PlayerCode = x!["userName"]!.ToString(),
             //注单唯一Id
             ExternalRoundId = x["id"]!.ToString(),
-            //是否结算：1：已结算 2:撤销
-            IsClosed = x["isRevocation"]!.GetValue<int>() == 1 ? true : false,
+            //是否结算：0:未結算 1：已结算 2:撤销
+            IsClosed = x["isRevocation"]!.GetValue<int>() == 1,
+            //是否作廢：0:未結算 1：已结算 2:撤销
+            IsVoid = x["isRevocation"]!.GetValue<int>() == 2,
             //游戏下注时间
             ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(x["betTime"]!.ToString()), TimeSpan.FromHours(8D)),
             //游戏结算时间
-            ExternalClosedOn = x["calTime"] == null
-                ? null
-                : new DateTimeOffset(DateTime.Parse(x["calTime"]!.ToString()), TimeSpan.FromHours(8D)),
+            ExternalClosedOn = x["isRevocation"]!.GetValue<int>() ==1
+                ? new DateTimeOffset(DateTime.Parse(x["calTime"]!.ToString()), TimeSpan.FromHours(8D))
+                :DateTimeOffset.UnixEpoch,
             //下注金额
             Bet = x["betPoints"]!.GetValue<decimal>(),
             //有效下注金额
             ValidBet = x["availableBet"] == null
-                ? null
+                ? 0
                 : x["availableBet"]!.GetValue<decimal>(),
             //派彩金额 (输赢应扣除下注金额)
             Settle = x["winOrLoss"] == null
-                ? null :
+                ? 0 :
                 x["winOrLoss"]!.GetValue<decimal>(),
             ExternalGameId = x["tableId"]!.ToString(),
             AdditionalData = x.ToString(),
@@ -402,7 +399,7 @@ internal class GameApiClient : IGameApiClient
             .GetAsync($"{videoGameApiUrl?.ToString()}ag/result/getAgentFix.html?username={agentName}", cancellationToken)
             .ConfigureAwait(false);
 
-        using var sr = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync().Result);
+        using var sr = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken).Result);
         var response = await sr.ReadToEndAsync() ?? string.Empty;
 
         var agentFix = JsonSerializer.Deserialize<string>(response);
@@ -599,12 +596,7 @@ internal class GameApiClient : IGameApiClient
 
         var codeId = jsonNode!["codeId"]!.GetValue<int>();
 
-        if (codeId is not 0)
-        {
-            return false;
-        }
-
-        return true;
+        return codeId is 0;
     }
 
     private static string GetHashMD5(string data)

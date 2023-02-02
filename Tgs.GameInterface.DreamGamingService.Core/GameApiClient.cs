@@ -349,6 +349,9 @@ internal class GameApiClient : IGameApiClient
 
         var listArray = jsonNode["list"]!.AsArray();
 
+        if (!listArray.Any())
+            yield break;
+
         var betResults = listArray.Select(x => new GetReportResult
         {
             //会员登入账号

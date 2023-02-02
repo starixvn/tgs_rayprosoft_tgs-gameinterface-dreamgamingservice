@@ -362,6 +362,8 @@ internal class GameApiClient : IGameApiClient
             //游戏结算时间
             ExternalClosedOn = x["isRevocation"]!.GetValue<int>() ==1
                 ? new DateTimeOffset(DateTime.Parse(x["calTime"]!.ToString()), TimeSpan.FromHours(8D))
+                : x["calTime"] is not null
+                ? new DateTimeOffset(DateTime.Parse(x["calTime"]!.ToString()), TimeSpan.FromHours(8D))
                 :DateTimeOffset.UnixEpoch,
             //下注金额
             Bet = x["betPoints"]!.GetValue<decimal>(),

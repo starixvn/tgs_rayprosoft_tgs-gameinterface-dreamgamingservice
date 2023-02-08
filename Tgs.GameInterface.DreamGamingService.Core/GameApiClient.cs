@@ -353,9 +353,9 @@ internal class GameApiClient : IGameApiClient
             PlayerCode = x!["userName"]!.ToString(),
             //注单唯一Id
             ExternalRoundId = x["id"]!.ToString(),
-            //是否结算：0:未結算 1：已结算 2:撤销
-            IsClosed = x["isRevocation"]!.GetValue<int>() == 1,
-            //是否作廢：0:未結算 1：已结算 2:撤销
+            //是否结算：0:未結算 1：已结算 2:撤销 3:凍結
+            IsClosed = x["isRevocation"]!.GetValue<int>() is 1 or 3,
+            //是否作廢：0:未結算 1：已结算 2:撤销 3:凍結
             IsVoid = x["isRevocation"]!.GetValue<int>() == 2,
             //游戏下注时间
             ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(x["betTime"]!.ToString()), TimeSpan.FromHours(8D)),

@@ -47,7 +47,7 @@ internal class GameHistorySettledQueryService : IQueryService<GameHistorySettled
                 Bet: bettingHistoryBet.Bet,
                 ValidBet: bettingHistoryBet.ValidBet,
                 PlayerWinLoss: playerWinLoss,
-                Turnover: bettingHistoryBet.Bet,
+                Turnover: bettingHistoryBet.ValidBet,
                 Settle: bettingHistoryBet.Settle,
                 AdditionalData: bettingHistoryBet.AdditionalData,
                 ExternalGameId: bettingHistoryBet.ExternalGameId);

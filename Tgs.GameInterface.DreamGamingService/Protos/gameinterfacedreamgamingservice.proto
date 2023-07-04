@@ -22,6 +22,7 @@ service  GameInterfaceDreamGamingService{
   rpc GameHistorySettled (GameHistorySettledRequest) returns (GameHistorySettledReply);
   rpc GameHistoryMark (GameHistoryMarkRequest) returns (BaseReply);
   rpc GameHistoryDetail (GameHistoryDetailRequest) returns (GameHistoryDetailReply);
+  rpc CheckingService(CheckingServiceRequest) returns (CheckingServiceReply);
 }
 
 // The request message containing the user's name.
@@ -110,6 +111,10 @@ message GameHistoryDetailRequest {
 	string id = 4;
 }
 
+message CheckingServiceRequest{
+    string machine_name = 1;
+}
+
 // The response message containing the greetings.
 message BaseReply{
 	bool status = 1;
@@ -165,4 +170,8 @@ message GameHistorySettled {
 
 message GameHistoryDetailReply {
 	string game_result = 1;
+}
+
+message CheckingServiceReply{
+    string machine_name = 1;
 }

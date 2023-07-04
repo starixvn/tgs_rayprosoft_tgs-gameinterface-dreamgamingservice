@@ -87,4 +87,13 @@ nodeSelector: {}
 
 tolerations: []
 
-affinity: {}
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchExpressions:
+        - key: app
+          operator: In
+          values:
+          - game-gameinterface-dg-service
+      topologyKey: kubernetes.io/hostname

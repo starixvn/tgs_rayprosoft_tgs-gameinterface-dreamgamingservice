@@ -8,6 +8,7 @@ namespace Tgs.GameInterface.DreamGamingService.GrpcServices;
 
 internal class GameInterfaceDreamGamingGrpcService : GameInterfaceDreamGamingService.GameInterfaceDreamGamingServiceBase
 {
+    private readonly ILogger<GameInterfaceDreamGamingGrpcService> _logger;
     private readonly IGetService<FundInQuery, FundResult> _fundInService;
     private readonly IGetService<FundOutQuery, FundResult> _fundOutService;
     private readonly IGetService<FundStatusQuery, bool> _fundStatusService;
@@ -22,6 +23,7 @@ internal class GameInterfaceDreamGamingGrpcService : GameInterfaceDreamGamingSer
     private readonly IGetService<GameRoundDetailQuery, string> _gameRoundDetailSerivce;
 
     public GameInterfaceDreamGamingGrpcService(
+        ILogger<GameInterfaceDreamGamingGrpcService> logger,
         IGetService<FundInQuery, FundResult> fundInService,
         IGetService<FundOutQuery, FundResult> fundOutService,
         IGetService<FundStatusQuery, bool> fundStatusService,
@@ -35,6 +37,7 @@ internal class GameInterfaceDreamGamingGrpcService : GameInterfaceDreamGamingSer
         IGetService<GameHistoryMarkQuery, bool> gameHistoryMarkService,
         IGetService<GameRoundDetailQuery, string> gameRoundDetailSerivce)
     {
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _fundInService = fundInService ?? throw new ArgumentNullException(nameof(fundInService));
         _fundOutService = fundOutService ?? throw new ArgumentNullException(nameof(fundOutService));
         _fundStatusService = fundStatusService ?? throw new ArgumentNullException(nameof(fundStatusService));
@@ -47,6 +50,16 @@ internal class GameInterfaceDreamGamingGrpcService : GameInterfaceDreamGamingSer
         _gameHistorySettledService = gameHistorySettledService ?? throw new ArgumentNullException(nameof(gameHistorySettledService));
         _gameHistoryMarkService = gameHistoryMarkService ?? throw new ArgumentNullException(nameof(gameHistoryMarkService));
         _gameRoundDetailSerivce = gameRoundDetailSerivce ?? throw new ArgumentNullException(nameof(gameRoundDetailSerivce));
+    }
+
+    public override Task<CheckingServiceReply> CheckingService(CheckingServiceRequest request, ServerCallContext context)
+    {
+        _logger.LogWarning("LogOn:{logOn} Message: Create a check connection.({machineName})", DateTime.Now.ToString("o"), request.MachineName);
+
+        return Task.FromResult(new CheckingServiceReply
+        {
+            MachineName = Environment.MachineName
+        });
     }
 
     public override async Task<FundReply> FundIn(FundRequest request, ServerCallContext context)

@@ -4,6 +4,10 @@ namespace Tgs.GameInterface.DreamGamingService.Client;
 
 public interface IGameInterfaceDreamGamingClient
 {
+    ValueTask<string> CheckingServiceAsync(
+        string machineName,
+        CancellationToken cancellationToken = default);
+
     ValueTask<FundReply> FundInAsync(
         Uri apiUrl,
         string apiKey,

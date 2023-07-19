@@ -9,7 +9,7 @@ public static class ByteArrayExtensions
         var sb = new StringBuilder();
         foreach (var t in byteArray)
         {
-            sb.Append(t.ToString("x2"));
+            _ = sb.Append(t.ToString("x2"));
         }
         return sb.ToString();
     }

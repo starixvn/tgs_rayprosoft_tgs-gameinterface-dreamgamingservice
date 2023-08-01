@@ -117,10 +117,13 @@ internal class GameApiClient : IGameApiClient
 
         var codeId = jsonNode!["codeId"]!.GetValue<int>();
 
-        if (codeId is not 0)
+        if (codeId != 0)
         {
-            _ = _codeIdDescription.TryGetValue(codeId, out var codeIdDescription);
-            throw new GameProviderResponseErrorException(codeId, codeIdDescription);
+            if (codeId != 116)
+            {
+                _ = _codeIdDescription.TryGetValue(codeId, out var codeIdDescription);
+                throw new GameProviderResponseErrorException(codeId, codeIdDescription);
+            }
         }
     }
 

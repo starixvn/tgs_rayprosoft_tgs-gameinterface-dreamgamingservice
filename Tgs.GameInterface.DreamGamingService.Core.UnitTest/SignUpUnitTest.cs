@@ -62,6 +62,39 @@ public class SignUpUnitTest
 
         var sut = new GameApiClient(fakeHttpClient, fakeLog);
 
+        await sut.SignUpAsync(
+            apiUrl: apiUrl,
+            apiKey: apiKey,
+            agentName: agentName,
+            username: username,
+            password: password,
+            currencyName: currencyName,
+            tableLimit: "A",
+            winLimit: 0)
+        .ConfigureAwait(false);
+    }
+
+    [TestMethod]
+    public async Task Exception()
+    {
+        var apiUrl = new Uri("https://api.dg0.co/");
+        var apiKey = "d39da9da731b427b9349b80d9d97f2e4";
+        var agentName = "DGTE0105IH";
+        var username = "4ucmqplxb029";
+        var password = "DGTFP@ssw0rd";
+        var currencyName = "CNY";
+
+        var url = new Uri(apiUrl, $"/user/signup/{agentName}");
+        var response = "{\"codeId\":101,\"token\":\"e649a5cff7ed245207a371ecd3889bfa\",\"random\":\"1673224967156\",\"data\":\"A\"}";
+        var handler = new MockHttpMessageHandler();
+        _ = handler.Expect(HttpMethod.Post, url.ToString())
+                        .Respond(HttpStatusCode.OK, new StringContent(response));
+
+        var fakeHttpClient = handler.ToHttpClient();
+        var fakeLog = NullLogger<GameApiClient>.Instance;
+
+        var sut = new GameApiClient(fakeHttpClient, fakeLog);
+
         _ = await Assert
             .ThrowsExceptionAsync<GameProviderResponseErrorException>(() =>
                 sut.SignUpAsync(

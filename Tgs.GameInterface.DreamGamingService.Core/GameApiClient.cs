@@ -204,8 +204,11 @@ internal class GameApiClient : IGameApiClient
 
         if (codeId is not 0)
         {
-            _ = _codeIdDescription.TryGetValue(codeId, out var codeIdDescription);
-            _logger.LogWarning("GetBalance Failed, codeId:{codeId}, ErrorMessage:{codeIdDescription}", codeId, codeIdDescription);
+            if (codeId is not 114)
+            {
+                _ = _codeIdDescription.TryGetValue(codeId, out var codeIdDescription);
+                throw new GameProviderResponseErrorException(codeId, codeIdDescription);
+            }
             return new(false, 0);
         }
 

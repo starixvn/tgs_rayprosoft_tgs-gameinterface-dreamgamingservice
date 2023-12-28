@@ -1,26 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
-
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
 	<PropertyGroup>
-		<Version>0.0.13</Version>
+		<Version>0.0.14</Version>
 		<Authors>Raypro</Authors>
-		<Description>Tgs GameInterface DreamGaming Client</Description>
 		<PackageProjectUrl>https://gitlab.com/rayprosoft/tgs-gameinterface-dreamgamingservice</PackageProjectUrl>
 		<RepositoryUrl>https://gitlab.com/rayprosoft/tgs-gameinterface-dreamgamingservice.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageTags>Tgs GameInterface DreamGamingService</PackageTags>
+		<RootNamespace>Tgs.GameInterface.DreamGamingService.Client</RootNamespace>
+		<PackageId>Tgs.GameInterface.DreamGamingService.Client</PackageId>
+		<Title>Tgs.GameInterface.DreamGamingService.Client</Title>
+		<Description>Tgs.GameInterface.DreamGamingService.Client</Description>
+		<PackageTags>Tgs GameInterface DreamGamingService Client</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.58.0" />
-		<PackageReference Include="Grpc.Net.ClientFactory" Version="2.58.0" />
-		<PackageReference Include="Grpc.Tools" Version="2.59.0">
+		<PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.59.0" />
+		<PackageReference Include="Grpc.Net.ClientFactory" Version="2.59.0" />
+		<PackageReference Include="Grpc.Tools" Version="2.60.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
@@ -28,8 +30,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Protobuf Include="..\Tgs.GameInterface.DreamGamingService\Protos\gameinterfacedreamgamingservice.proto" GrpcServices="Client">
-	    <Link>gameinterfacedreamgamingservice.proto</Link>
-	  </Protobuf>
+		<Protobuf Include="..\Tgs.GameInterface.DreamGamingService\Protos\gameinterfacedreamgamingservice.proto" GrpcServices="Client">
+			<Link>gameinterfacedreamgamingservice.proto</Link>
+		</Protobuf>
 	</ItemGroup>
 </Project>

@@ -278,13 +278,13 @@ public class DreamGamingController : ControllerBase
             ApiKey: model.ApiKey,
             AgentName: model.AgentName);
 
-        var gameRecords = await service
-                .QueryAsync(
-                    query: query,
-                    cancellationToken: HttpContext.RequestAborted)
-                .ToArrayAsync(
-                    cancellationToken: HttpContext.RequestAborted)
-                .ConfigureAwait(false);
+        var gameRecords = await service.QueryAsync(
+            query: query,
+            cancellationToken: HttpContext.RequestAborted)
+            .ToArrayAsync(
+            cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false)
+            ?? Enumerable.Empty<GameHistorySettledResult>();
 
         if (!gameRecords.Any())
         {
@@ -337,13 +337,13 @@ public class DreamGamingController : ControllerBase
             ApiKey: model.ApiKey,
             AgentName: model.AgentName);
 
-        var onlineResults = await service
-                .QueryAsync(
-                    query: query,
-                    cancellationToken: HttpContext.RequestAborted)
-                .ToArrayAsync(
-                    cancellationToken: HttpContext.RequestAborted)
-                .ConfigureAwait(false);
+        var onlineResults = await service.QueryAsync(
+            query: query,
+            cancellationToken: HttpContext.RequestAborted)
+            .ToArrayAsync(
+            cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false)
+            ?? Enumerable.Empty<PlayerOnlineResult>();
 
         if (!onlineResults.Any())
         {

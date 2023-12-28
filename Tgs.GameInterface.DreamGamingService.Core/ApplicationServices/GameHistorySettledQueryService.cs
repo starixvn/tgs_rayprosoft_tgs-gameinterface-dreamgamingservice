@@ -1,28 +1,22 @@
 ﻿using System.Runtime.CompilerServices;
+using Tgs.GameInterface.DreamGamingService.Core.Models;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameInterface.DreamGamingService.Core.ApplicationServices;
 
-internal class GameHistorySettledQueryService : IQueryService<GameHistorySettledQuery, GameHistorySettledResult>
+internal class GameHistorySettledQueryService(
+    IGameApiClient client) : IQueryService<GameHistorySettledQuery, GameHistorySettledResult>
 {
-    private readonly IGameApiClient _client;
-
-    public GameHistorySettledQueryService(
-        IGameApiClient client)
-    {
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-    }
-
     public async IAsyncEnumerable<GameHistorySettledResult> QueryAsync(GameHistorySettledQuery query, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var bettingHistoryBets = await _client
-                .GetReportAsync(
-                    apiUrl: query.ApiUrl,
-                    apiKey: query.ApiKey,
-                    agentName: query.AgentName,
-                    cancellationToken: cancellationToken)
-                .ToArrayAsync(cancellationToken)
-                .ConfigureAwait(false);
+        var bettingHistoryBets = await client.GetReportAsync(
+            apiUrl: query.ApiUrl,
+            apiKey: query.ApiKey,
+            agentName: query.AgentName,
+            cancellationToken: cancellationToken)
+            .ToArrayAsync(cancellationToken)
+            .ConfigureAwait(false)
+            ?? Enumerable.Empty<GetReportResult>();
 
         if (!bettingHistoryBets.Any())
         {

@@ -11,11 +11,10 @@ using Tgs.GameInterface.DreamGamingService.Core.Models;
 
 namespace Tgs.GameInterface.DreamGamingService.Core;
 
-internal class GameApiClient : IGameApiClient
+internal class GameApiClient(
+    HttpClient client,
+    ILogger<GameApiClient> logger) : IGameApiClient
 {
-    private readonly HttpClient _client;
-    private readonly ILogger<GameApiClient> _logger;
-
     private readonly Dictionary<int, string> _codeIdDescription = new()
     {
         {  0, "操作成功" },
@@ -70,14 +69,6 @@ internal class GameApiClient : IGameApiClient
         { 502,"系统忙" },
         { 503,"数据操作异常" },
     };
-
-    public GameApiClient(
-        HttpClient client,
-        ILogger<GameApiClient> logger)
-    {
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    }
 
     public async ValueTask SignUpAsync(
         Uri apiUrl,
@@ -326,7 +317,7 @@ internal class GameApiClient : IGameApiClient
                      Delay = retryTime,
                      CreationTime = DateTimeOffset.UtcNow
                  };
-                 _logger.LogWarning("{JsonSerializer.Serialize(data)}", JsonSerializer.Serialize(data));
+                 logger.LogWarning("{JsonSerializer.Serialize(data)}", JsonSerializer.Serialize(data));
              });
 
         var url = new Uri(apiUrl, $"/game/getReport/{agentName}");
@@ -350,7 +341,7 @@ internal class GameApiClient : IGameApiClient
 
         var listArray = jsonNode["list"]!.AsArray();
 
-        if (listArray is null || !listArray.Any())
+        if (listArray is null || listArray.Count == 0)
             yield break;
 
         var betResults = listArray.Select(x => new GetReportResult
@@ -401,7 +392,7 @@ internal class GameApiClient : IGameApiClient
         string id,
         CancellationToken cancellationToken = default)
     {
-        var httpResponseMessage = await _client
+        var httpResponseMessage = await client
             .GetAsync($"{videoGameApiUrl?.ToString()}ag/result/getAgentFix.html?username={agentName}", cancellationToken)
             .ConfigureAwait(false);
 
@@ -444,7 +435,7 @@ internal class GameApiClient : IGameApiClient
                      Delay = retryTime,
                      CreationTime = DateTimeOffset.UtcNow
                  };
-                 _logger.LogWarning("{JsonSerializer.Serialize(data)}", JsonSerializer.Serialize(data));
+                 logger.LogWarning("{JsonSerializer.Serialize(data)}", JsonSerializer.Serialize(data));
              });
 
         var url = new Uri(apiUrl, $"/game/markReport/{agentName}");
@@ -487,7 +478,7 @@ internal class GameApiClient : IGameApiClient
                      Delay = retryTime,
                      CreationTime = DateTimeOffset.UtcNow
                  };
-                 _logger.LogWarning("{JsonSerializer.Serialize(data)}", JsonSerializer.Serialize(data));
+                 logger.LogWarning("{JsonSerializer.Serialize(data)}", JsonSerializer.Serialize(data));
              });
 
         var url = new Uri(apiUrl, $"/user/onlineReport/{agentName}");
@@ -559,7 +550,7 @@ internal class GameApiClient : IGameApiClient
                      Delay = retryTime,
                      CreationTime = DateTimeOffset.UtcNow
                  };
-                 _logger.LogWarning("{JsonSerializer.Serialize(data)}", JsonSerializer.Serialize(data));
+                 logger.LogWarning("{JsonSerializer.Serialize(data)}", JsonSerializer.Serialize(data));
              });
 
         var url = new Uri(apiUrl, $"/user/offline/{agentName}");
@@ -621,7 +612,7 @@ internal class GameApiClient : IGameApiClient
 
         HttpContent content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
 
-        var httpResponseMessage = await _client.PostAsync(apiUrl, content, cancellationToken);
+        var httpResponseMessage = await client.PostAsync(apiUrl, content, cancellationToken);
         sw.Stop();
 
         var responseMessage = default(string);
@@ -645,7 +636,7 @@ internal class GameApiClient : IGameApiClient
             RecordedOn = DateTimeOffset.UtcNow
         };
 
-        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
+        logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         _ = httpResponseMessage.EnsureSuccessStatusCode();
 

@@ -6,55 +6,24 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameInterface.DreamGamingService.GrpcServices;
 
-internal class GameInterfaceDreamGamingGrpcService : GameInterfaceDreamGamingService.GameInterfaceDreamGamingServiceBase
+internal class GameInterfaceDreamGamingGrpcService(
+    ILogger<GameInterfaceDreamGamingGrpcService> logger,
+    IGetService<FundInQuery, FundResult> fundInService,
+    IGetService<FundOutQuery, FundResult> fundOutService,
+    IGetService<FundStatusQuery, bool> fundStatusService,
+    ICommandService<PlayerCreateCommand> playerCreateService,
+    IGetService<PlayerBalanceQuery, PlayerBalanceResult> playerBalanceService,
+    ICommandService<PlayerKickCommand> playerKickService,
+    IGetService<PlayerTableLimitCommand, bool> playerTableLimitService,
+    IQueryService<PlayerOnlineQuery, PlayerOnlineResult> playerOnlineService,
+    IGetService<GameUrlQuery, string?> gameUrlService,
+    IQueryService<GameHistorySettledQuery, GameHistorySettledResult> gameHistorySettledService,
+    IGetService<GameHistoryMarkQuery, bool> gameHistoryMarkService,
+    IGetService<GameRoundDetailQuery, string> gameRoundDetailSerivce) : GameInterfaceDreamGamingService.GameInterfaceDreamGamingServiceBase
 {
-    private readonly ILogger<GameInterfaceDreamGamingGrpcService> _logger;
-    private readonly IGetService<FundInQuery, FundResult> _fundInService;
-    private readonly IGetService<FundOutQuery, FundResult> _fundOutService;
-    private readonly IGetService<FundStatusQuery, bool> _fundStatusService;
-    private readonly ICommandService<PlayerCreateCommand> _playerCreateService;
-    private readonly IGetService<PlayerBalanceQuery, PlayerBalanceResult> _playerBalanceService;
-    private readonly ICommandService<PlayerKickCommand> _playerKickService;
-    private readonly IGetService<PlayerTableLimitCommand, bool> _playerTableLimitService;
-    private readonly IQueryService<PlayerOnlineQuery, PlayerOnlineResult> _playerOnlineService;
-    private readonly IGetService<GameUrlQuery, string?> _gameUrlService;
-    private readonly IQueryService<GameHistorySettledQuery, GameHistorySettledResult> _gameHistorySettledService;
-    private readonly IGetService<GameHistoryMarkQuery, bool> _gameHistoryMarkService;
-    private readonly IGetService<GameRoundDetailQuery, string> _gameRoundDetailSerivce;
-
-    public GameInterfaceDreamGamingGrpcService(
-        ILogger<GameInterfaceDreamGamingGrpcService> logger,
-        IGetService<FundInQuery, FundResult> fundInService,
-        IGetService<FundOutQuery, FundResult> fundOutService,
-        IGetService<FundStatusQuery, bool> fundStatusService,
-        ICommandService<PlayerCreateCommand> playerCreateService,
-        IGetService<PlayerBalanceQuery, PlayerBalanceResult> playerBalanceService,
-        ICommandService<PlayerKickCommand> playerKickService,
-        IGetService<PlayerTableLimitCommand, bool> playerTableLimitService,
-        IQueryService<PlayerOnlineQuery, PlayerOnlineResult> playerOnlineService,
-        IGetService<GameUrlQuery, string?> gameUrlService,
-        IQueryService<GameHistorySettledQuery, GameHistorySettledResult> gameHistorySettledService,
-        IGetService<GameHistoryMarkQuery, bool> gameHistoryMarkService,
-        IGetService<GameRoundDetailQuery, string> gameRoundDetailSerivce)
-    {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _fundInService = fundInService ?? throw new ArgumentNullException(nameof(fundInService));
-        _fundOutService = fundOutService ?? throw new ArgumentNullException(nameof(fundOutService));
-        _fundStatusService = fundStatusService ?? throw new ArgumentNullException(nameof(fundStatusService));
-        _playerCreateService = playerCreateService ?? throw new ArgumentNullException(nameof(playerCreateService));
-        _playerBalanceService = playerBalanceService ?? throw new ArgumentNullException(nameof(playerBalanceService));
-        _playerKickService = playerKickService ?? throw new ArgumentNullException(nameof(playerKickService));
-        _playerTableLimitService = playerTableLimitService ?? throw new ArgumentNullException(nameof(playerTableLimitService));
-        _playerOnlineService = playerOnlineService ?? throw new ArgumentNullException(nameof(playerOnlineService));
-        _gameUrlService = gameUrlService ?? throw new ArgumentNullException(nameof(gameUrlService));
-        _gameHistorySettledService = gameHistorySettledService ?? throw new ArgumentNullException(nameof(gameHistorySettledService));
-        _gameHistoryMarkService = gameHistoryMarkService ?? throw new ArgumentNullException(nameof(gameHistoryMarkService));
-        _gameRoundDetailSerivce = gameRoundDetailSerivce ?? throw new ArgumentNullException(nameof(gameRoundDetailSerivce));
-    }
-
     public override Task<CheckingServiceReply> CheckingService(CheckingServiceRequest request, ServerCallContext context)
     {
-        _logger.LogWarning("LogOn:{logOn} Message: Create a check connection.({machineName})", DateTime.Now.ToString("o"), request.MachineName);
+        logger.LogWarning("LogOn:{logOn} Message: Create a check connection.({machineName})", DateTime.Now.ToString("o"), request.MachineName);
 
         return Task.FromResult(new CheckingServiceReply
         {
@@ -72,7 +41,7 @@ internal class GameInterfaceDreamGamingGrpcService : GameInterfaceDreamGamingSer
             RefTransactionCode: request.RefTransactionCode,
             Amount: request.Amount.ToDecimal().GetValueOrDefault(0));
 
-        var result = await _fundInService
+        var result = await fundInService
             .GetAsync(
                 query: query,
                 cancellationToken: context.CancellationToken)
@@ -96,7 +65,7 @@ internal class GameInterfaceDreamGamingGrpcService : GameInterfaceDreamGamingSer
             RefTransactionCode: request.RefTransactionCode,
             Amount: request.Amount.ToDecimal().GetValueOrDefault(0));
 
-        var result = await _fundOutService
+        var result = await fundOutService
             .GetAsync(
                 query: query,
                 cancellationToken: context.CancellationToken)
@@ -118,7 +87,7 @@ internal class GameInterfaceDreamGamingGrpcService : GameInterfaceDreamGamingSer
            AgentName: request.AgentName,
            RefTransactionCode: request.RefTransactionCode);
 
-        var result = await _fundStatusService
+        var result = await fundStatusService
             .GetAsync(
                 query: query,
                 cancellationToken: context.CancellationToken)
@@ -142,7 +111,7 @@ internal class GameInterfaceDreamGamingGrpcService : GameInterfaceDreamGamingSer
            TableLimit: request.TableLimit,
            WinLimit: request.WinLimit);
 
-        await _playerCreateService
+        await playerCreateService
             .ExecuteAsync(
                 command: command,
                 cancellationToken: context.CancellationToken)
@@ -162,7 +131,7 @@ internal class GameInterfaceDreamGamingGrpcService : GameInterfaceDreamGamingSer
            AgentName: request.AgentName,
            Username: request.Username);
 
-        var result = await _playerBalanceService
+        var result = await playerBalanceService
             .GetAsync(
                 query: query,
                 cancellationToken: context.CancellationToken)
@@ -183,7 +152,7 @@ internal class GameInterfaceDreamGamingGrpcService : GameInterfaceDreamGamingSer
            AgentName: request.AgentName,
            MemberId: request.MemberId);
 
-        await _playerKickService
+        await playerKickService
             .ExecuteAsync(
                 command: command,
                 cancellationToken: context.CancellationToken)
@@ -204,7 +173,7 @@ internal class GameInterfaceDreamGamingGrpcService : GameInterfaceDreamGamingSer
             Username: request.Username,
             TableLimit: request.TableLimit);
 
-        var result = await _playerTableLimitService
+        var result = await playerTableLimitService
             .GetAsync(command, cancellationToken: context.CancellationToken)
             .ConfigureAwait(false);
 
@@ -221,12 +190,12 @@ internal class GameInterfaceDreamGamingGrpcService : GameInterfaceDreamGamingSer
             ApiKey: request.ApiKey,
             AgentName: request.AgentName);
 
-        var playerOnlines = await _playerOnlineService
-            .QueryAsync(
-                query: query,
-                cancellationToken: context.CancellationToken)
+        var playerOnlines = await playerOnlineService.QueryAsync(
+            query: query,
+            cancellationToken: context.CancellationToken)
             .ToArrayAsync(context.CancellationToken)
-            .ConfigureAwait(false);
+            .ConfigureAwait(false)
+            ?? Enumerable.Empty<PlayerOnlineResult>();
 
         var reply = new PlayerOnlineReply();
 
@@ -256,7 +225,7 @@ internal class GameInterfaceDreamGamingGrpcService : GameInterfaceDreamGamingSer
            IsMobile: request.IsMobile,
            Lang: request.Lang);
 
-        var result = await _gameUrlService
+        var result = await gameUrlService
             .GetAsync(
                 query: query,
                 cancellationToken: context.CancellationToken)
@@ -275,12 +244,13 @@ internal class GameInterfaceDreamGamingGrpcService : GameInterfaceDreamGamingSer
             ApiKey: request.ApiKey,
             AgentName: request.AgentName);
 
-        var gameHistorySettleds = await _gameHistorySettledService
-            .QueryAsync(
-                query: query,
-                cancellationToken: context.CancellationToken)
-            .ToArrayAsync(context.CancellationToken)
-            .ConfigureAwait(false);
+        var gameHistorySettleds = await gameHistorySettledService.QueryAsync(
+            query: query,
+            cancellationToken: context.CancellationToken)
+            .ToArrayAsync(
+            context.CancellationToken)
+            .ConfigureAwait(false)
+            ?? Enumerable.Empty<GameHistorySettledResult>();
 
         var reply = new GameHistorySettledReply();
 
@@ -318,7 +288,7 @@ internal class GameInterfaceDreamGamingGrpcService : GameInterfaceDreamGamingSer
            AgentName: request.AgentName,
            ExternalRoundIds: request.ExternalRoundIds.ToArray());
 
-        var result = await _gameHistoryMarkService
+        var result = await gameHistoryMarkService
             .GetAsync(
                 query: query,
                 cancellationToken: context.CancellationToken)
@@ -338,7 +308,7 @@ internal class GameInterfaceDreamGamingGrpcService : GameInterfaceDreamGamingSer
            Language: request.Language,
            Id: request.Id);
 
-        var result = await _gameRoundDetailSerivce
+        var result = await gameRoundDetailSerivce
             .GetAsync(
                 query: query,
                 cancellationToken: context.CancellationToken)

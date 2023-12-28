@@ -3,15 +3,9 @@ using Tgs.GameInterface.DreamGamingService.Protos;
 
 namespace Tgs.GameInterface.DreamGamingService.Client;
 
-internal class GameInterfaceDreamGamingClient : IGameInterfaceDreamGamingClient
+internal class GameInterfaceDreamGamingClient(
+    GameInterfaceDreamGamingService.GameInterfaceDreamGamingServiceClient client) : IGameInterfaceDreamGamingClient
 {
-    private readonly GameInterfaceDreamGamingService.GameInterfaceDreamGamingServiceClient _client;
-
-    public GameInterfaceDreamGamingClient(GameInterfaceDreamGamingService.GameInterfaceDreamGamingServiceClient client)
-    {
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-    }
-
     public async ValueTask<string> CheckingServiceAsync(string machineName, CancellationToken cancellationToken = default)
     {
         var request = new CheckingServiceRequest
@@ -19,7 +13,7 @@ internal class GameInterfaceDreamGamingClient : IGameInterfaceDreamGamingClient
             MachineName = machineName,
         };
 
-        var reply = await _client
+        var reply = await client
             .CheckingServiceAsync(
                 request: request,
                 cancellationToken: cancellationToken)
@@ -40,7 +34,7 @@ internal class GameInterfaceDreamGamingClient : IGameInterfaceDreamGamingClient
             Amount = amount,
         };
 
-        return await _client
+        return await client
             .FundInAsync(
                 request: request,
                 cancellationToken: cancellationToken)
@@ -59,7 +53,7 @@ internal class GameInterfaceDreamGamingClient : IGameInterfaceDreamGamingClient
             Amount = amount,
         };
 
-        return await _client
+        return await client
             .FundOutAsync(
                 request: request,
                 cancellationToken: cancellationToken)
@@ -76,7 +70,7 @@ internal class GameInterfaceDreamGamingClient : IGameInterfaceDreamGamingClient
             RefTransactionCode = refTransactionCode,
         };
 
-        return await _client
+        return await client
             .FundStatusAsync(
                 request: request,
                 cancellationToken: cancellationToken)
@@ -93,7 +87,7 @@ internal class GameInterfaceDreamGamingClient : IGameInterfaceDreamGamingClient
             Id = id,
         };
 
-        return await _client
+        return await client
             .GameHistoryDetailAsync(
                 request: request,
                 cancellationToken: cancellationToken)
@@ -114,7 +108,7 @@ internal class GameInterfaceDreamGamingClient : IGameInterfaceDreamGamingClient
             request.ExternalRoundIds.Add(item);
         }
 
-        return await _client
+        return await client
             .GameHistoryMarkAsync(
                 request: request,
                 cancellationToken: cancellationToken)
@@ -130,18 +124,19 @@ internal class GameInterfaceDreamGamingClient : IGameInterfaceDreamGamingClient
             AgentName = agentName,
         };
 
-        var reply = await _client
-                .GameHistorySettledAsync(
-                    request: request,
-                    cancellationToken: cancellationToken)
-                .ConfigureAwait(false);
+        var reply = await client.GameHistorySettledAsync(
+            request: request,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
-        if (!reply.Items.Any())
+        var items = reply.Items ?? Enumerable.Empty<GameHistorySettled>();
+
+        if (!items.Any())
         {
             yield break;
         }
 
-        foreach (var item in reply.Items)
+        foreach (var item in items)
         {
             yield return item;
         }
@@ -160,7 +155,7 @@ internal class GameInterfaceDreamGamingClient : IGameInterfaceDreamGamingClient
             Lang = lang,
         };
 
-        return await _client
+        return await client
             .GameUrlAsync(
                 request: request,
                 cancellationToken: cancellationToken)
@@ -177,7 +172,7 @@ internal class GameInterfaceDreamGamingClient : IGameInterfaceDreamGamingClient
             Username = username,
         };
 
-        return await _client
+        return await client
             .PlayerBalanceAsync(
                 request: request,
                 cancellationToken: cancellationToken)
@@ -198,7 +193,7 @@ internal class GameInterfaceDreamGamingClient : IGameInterfaceDreamGamingClient
             WinLimit = winLimit,
         };
 
-        _ = await _client
+        _ = await client
             .PlayerCreateAsync(
                 request: request,
                 cancellationToken: cancellationToken)
@@ -215,7 +210,7 @@ internal class GameInterfaceDreamGamingClient : IGameInterfaceDreamGamingClient
             MemberId = memberId
         };
 
-        _ = await _client
+        _ = await client
             .PlayerKickAsync(
                 request: request,
                 cancellationToken: cancellationToken)
@@ -231,18 +226,20 @@ internal class GameInterfaceDreamGamingClient : IGameInterfaceDreamGamingClient
             AgentName = agentName,
         };
 
-        var reply = await _client
+        var reply = await client
                 .PlayerOnlineAsync(
                     request: request,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-        if (!reply.Items.Any())
+        var items = reply.Items ?? Enumerable.Empty<PlayerOnline>();
+
+        if (!items.Any())
         {
             yield break;
         }
 
-        foreach (var item in reply.Items)
+        foreach (var item in items)
         {
             yield return item;
         }

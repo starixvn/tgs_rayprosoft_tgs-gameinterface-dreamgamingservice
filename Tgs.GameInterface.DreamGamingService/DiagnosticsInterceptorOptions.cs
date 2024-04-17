@@ -4,6 +4,6 @@ namespace Tgs.GameInterface.DreamGamingService;
 
 public class DiagnosticsInterceptorOptions
 {
-    public ActivitySource InterceptorActivitySource { get; set; } =
-        new ActivitySource($"Tgs.GameInterface.DreamGamingService.DiagnosticsInterceptor");
+	public ActivitySource InterceptorActivitySource { get; set; } =
+		new ActivitySource($"Tgs.GameInterface.DreamGamingService.DiagnosticsInterceptor");
 }

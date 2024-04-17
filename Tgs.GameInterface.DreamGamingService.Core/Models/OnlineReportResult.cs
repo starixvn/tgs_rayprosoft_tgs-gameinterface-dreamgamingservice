@@ -2,6 +2,6 @@
 
 public record OnlineReportResult
 {
-    public string PlayerCode { get; init; } = default!;
-    public long MemberId { get; init; }
+	public string PlayerCode { get; init; } = default!;
+	public long MemberId { get; init; }
 };

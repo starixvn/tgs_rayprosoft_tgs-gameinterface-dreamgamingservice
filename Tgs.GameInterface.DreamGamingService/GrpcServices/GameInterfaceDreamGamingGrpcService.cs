@@ -13,7 +13,7 @@ internal class GameInterfaceDreamGamingGrpcService(
 	IGetService<FundStatusQuery, bool> fundStatusService,
 	ICommandService<PlayerCreateCommand> playerCreateService,
 	IGetService<PlayerBalanceQuery, PlayerBalanceResult> playerBalanceService,
-	ICommandService<PlayerKickCommand> playerKickService,
+	ICommandService<PlayerLogoutCommand> playerKickService,
 	IGetService<PlayerTableLimitCommand, bool> playerTableLimitService,
 	IQueryService<PlayerOnlineQuery, PlayerOnlineResult> playerOnlineService,
 	IGetService<GameUrlQuery, string?> gameUrlService,
@@ -37,8 +37,8 @@ internal class GameInterfaceDreamGamingGrpcService(
 			ApiUrl: new(request.ApiUrl),
 			ApiKey: request.ApiKey,
 			AgentName: request.AgentName,
-			Username: request.Username,
-			RefTransactionCode: request.RefTransactionCode,
+			PlayerCode: request.PlayerCode,
+			OrderId: request.OrderId,
 			Amount: request.Amount.ToDecimal().GetValueOrDefault(0));
 
 		var result = await fundInService
@@ -51,7 +51,8 @@ internal class GameInterfaceDreamGamingGrpcService(
 		{
 			RefTransactionCode = result.RefTransactionCode,
 			TransactionId = result.TransactionId,
-			Balance = result.Balance
+			Balance = result.Balance,
+			Resp = result.Resp
 		};
 	}
 
@@ -61,8 +62,8 @@ internal class GameInterfaceDreamGamingGrpcService(
 			ApiUrl: new(request.ApiUrl),
 			ApiKey: request.ApiKey,
 			AgentName: request.AgentName,
-			Username: request.Username,
-			RefTransactionCode: request.RefTransactionCode,
+			PlayerCode: request.PlayerCode,
+			OrderId: request.OrderId,
 			Amount: request.Amount.ToDecimal().GetValueOrDefault(0));
 
 		var result = await fundOutService
@@ -75,7 +76,8 @@ internal class GameInterfaceDreamGamingGrpcService(
 		{
 			RefTransactionCode = result.RefTransactionCode,
 			TransactionId = result.TransactionId,
-			Balance = result.Balance
+			Balance = result.Balance,
+			Resp = result.Resp
 		};
 	}
 
@@ -85,7 +87,7 @@ internal class GameInterfaceDreamGamingGrpcService(
 		   ApiUrl: new(request.ApiUrl),
 		   ApiKey: request.ApiKey,
 		   AgentName: request.AgentName,
-		   RefTransactionCode: request.RefTransactionCode);
+		   OrderId: request.OrderId);
 
 		var result = await fundStatusService
 			.GetAsync(
@@ -105,7 +107,7 @@ internal class GameInterfaceDreamGamingGrpcService(
 		   ApiUrl: new(request.ApiUrl),
 		   ApiKey: request.ApiKey,
 		   AgentName: request.AgentName,
-		   Username: request.Username,
+		   PlayerCode: request.PlayerCode,
 		   Password: request.Password,
 		   CurrencyName: request.CurrencyName,
 		   TableLimit: request.TableLimit,
@@ -129,7 +131,7 @@ internal class GameInterfaceDreamGamingGrpcService(
 		   ApiUrl: new(request.ApiUrl),
 		   ApiKey: request.ApiKey,
 		   AgentName: request.AgentName,
-		   Username: request.Username);
+		   PlayerCode: request.PlayerCode);
 
 		var result = await playerBalanceService
 			.GetAsync(
@@ -144,9 +146,9 @@ internal class GameInterfaceDreamGamingGrpcService(
 		};
 	}
 
-	public override async Task<BaseReply> PlayerKick(PlayerKickRequest request, ServerCallContext context)
+	public override async Task<BaseReply> PlayerLogout(PlayerLogoutRequest request, ServerCallContext context)
 	{
-		var command = new PlayerKickCommand(
+		var command = new PlayerLogoutCommand(
 		   ApiUrl: new(request.ApiUrl),
 		   ApiKey: request.ApiKey,
 		   AgentName: request.AgentName,
@@ -170,7 +172,7 @@ internal class GameInterfaceDreamGamingGrpcService(
 			ApiUrl: new(request.ApiUrl),
 			ApiKey: request.ApiKey,
 			AgentName: request.AgentName,
-			Username: request.Username,
+			PlayerCode: request.PlayerCode,
 			TableLimit: request.TableLimit);
 
 		var result = await playerTableLimitService
@@ -220,7 +222,7 @@ internal class GameInterfaceDreamGamingGrpcService(
 		   ApiUrl: new(request.ApiUrl),
 		   ApiKey: request.ApiKey,
 		   AgentName: request.AgentName,
-		   Username: request.Username,
+		   PlayerCode: request.PlayerCode,
 		   Password: request.Password,
 		   IsMobile: request.IsMobile,
 		   Lang: request.Lang);
@@ -286,7 +288,7 @@ internal class GameInterfaceDreamGamingGrpcService(
 		   ApiUrl: new(request.ApiUrl),
 		   ApiKey: request.ApiKey,
 		   AgentName: request.AgentName,
-		   ExternalRoundIds: request.ExternalRoundIds.ToArray());
+		   ExternalRoundIds: [.. request.ExternalRoundIds]);
 
 		var result = await gameHistoryMarkService
 			.GetAsync(
@@ -306,7 +308,7 @@ internal class GameInterfaceDreamGamingGrpcService(
 		   VideoGameApiUrl: new(request.VideoGameApiUrl),
 		   AgentName: request.AgentName,
 		   Language: request.Language,
-		   Id: request.Id);
+		   ExternalRoundId: request.ExternalRoundId);
 
 		var result = await gameRoundDetailSerivce
 			.GetAsync(

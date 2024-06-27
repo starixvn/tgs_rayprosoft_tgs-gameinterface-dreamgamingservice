@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameInterface.DreamGami
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameInterface.DreamGamingService.Client", "Tgs.GameInterface.DreamGamingService.Client\Tgs.GameInterface.DreamGamingService.Client.csproj", "{65B2221F-605D-4489-A39B-AFAC243A42CF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgs.GameInterface.DreamGamingService.Protos", "Tgs.GameInterface.DreamGamingService.Protos\Tgs.GameInterface.DreamGamingService.Protos.csproj", "{72A389C7-CDDA-4CC1-A1E6-A1538EBE8646}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{65B2221F-605D-4489-A39B-AFAC243A42CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65B2221F-605D-4489-A39B-AFAC243A42CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65B2221F-605D-4489-A39B-AFAC243A42CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72A389C7-CDDA-4CC1-A1E6-A1538EBE8646}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72A389C7-CDDA-4CC1-A1E6-A1538EBE8646}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72A389C7-CDDA-4CC1-A1E6-A1538EBE8646}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72A389C7-CDDA-4CC1-A1E6-A1538EBE8646}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

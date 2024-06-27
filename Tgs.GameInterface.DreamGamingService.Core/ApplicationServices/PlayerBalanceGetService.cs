@@ -11,7 +11,7 @@ internal class PlayerBalanceGetService(
 			apiUrl: query.ApiUrl,
 			apiKey: query.ApiKey,
 			agentName: query.AgentName,
-			username: query.Username,
+			username: query.PlayerCode,
 			cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return new PlayerBalanceResult(

@@ -4,5 +4,5 @@ public record PlayerTableLimitCommand(
 	Uri ApiUrl,
 	string ApiKey,
 	string AgentName,
-	string Username,
+	string PlayerCode,
 	string TableLimit);

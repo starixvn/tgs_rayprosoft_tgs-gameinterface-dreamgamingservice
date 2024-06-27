@@ -2,10 +2,10 @@
 
 namespace Tgs.GameInterface.DreamGamingService.Core.ApplicationServices;
 
-internal class PlayerKickCommandService(
-	IGameApiClient client) : ICommandService<PlayerKickCommand>
+internal class PlayerLogoutCommandService(
+	IGameApiClient client) : ICommandService<PlayerLogoutCommand>
 {
-	public async ValueTask ExecuteAsync(PlayerKickCommand command, CancellationToken cancellationToken = default)
+	public async ValueTask ExecuteAsync(PlayerLogoutCommand command, CancellationToken cancellationToken = default)
 	{
 		_ = await client
 			.OfflineAsync(command.ApiUrl, command.ApiKey, command.AgentName, command.MemberId, cancellationToken)

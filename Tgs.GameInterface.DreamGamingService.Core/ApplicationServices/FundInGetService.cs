@@ -11,14 +11,15 @@ internal class FundInGetService(IGameApiClient client) : IGetService<FundInQuery
 			apiUrl: query.ApiUrl,
 			apiKey: query.ApiKey,
 			agentName: query.AgentName,
-			username: query.Username,
-			refTransactionCode: query.RefTransactionCode,
+			username: query.PlayerCode,
+			refTransactionCode: query.OrderId,
 			amount: amount,
 			cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return new FundResult(
 			RefTransactionCode: result.RefTransactionCode,
 			TransactionId: result.TransactionId,
-			Balance: result.Balance);
+			Balance: result.Balance,
+			Resp: result.Resp);
 	}
 }

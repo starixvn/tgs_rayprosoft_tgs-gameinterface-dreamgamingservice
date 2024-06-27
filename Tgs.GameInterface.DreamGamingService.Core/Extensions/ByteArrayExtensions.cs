@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Tgs.GameInterface.DreamGamingService.Core;
+namespace Tgs.GameInterface.DreamGamingService.Core.Extensions;
 
 public static class ByteArrayExtensions
 {

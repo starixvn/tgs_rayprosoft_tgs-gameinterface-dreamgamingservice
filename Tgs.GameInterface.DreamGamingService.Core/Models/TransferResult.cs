@@ -3,4 +3,5 @@
 public record TransferResult(
 	string RefTransactionCode,
 	string TransactionId,
-	decimal Balance);
+	decimal Balance,
+	string Resp);

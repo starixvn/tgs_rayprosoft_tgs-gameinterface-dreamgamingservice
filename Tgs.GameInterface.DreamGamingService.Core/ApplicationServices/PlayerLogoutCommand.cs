@@ -1,6 +1,6 @@
 ﻿namespace Tgs.GameInterface.DreamGamingService.Core.ApplicationServices;
 
-public record PlayerKickCommand(
+public record PlayerLogoutCommand(
 	Uri ApiUrl,
 	string ApiKey,
 	string AgentName,

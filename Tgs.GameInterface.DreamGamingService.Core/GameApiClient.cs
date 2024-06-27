@@ -7,6 +7,7 @@ using System.Text.Json.Nodes;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Tgs.GameInterface.DreamGamingService.Core.Exceptions;
+using Tgs.GameInterface.DreamGamingService.Core.Extensions;
 using Tgs.GameInterface.DreamGamingService.Core.Models;
 
 namespace Tgs.GameInterface.DreamGamingService.Core;
@@ -15,61 +16,6 @@ internal class GameApiClient(
 	HttpClient client,
 	ILogger<GameApiClient> logger) : IGameApiClient
 {
-	private readonly Dictionary<int, string> _codeIdDescription = new()
-	{
-		{  0, "操作成功" },
-		{  1, "参数错误" },
-		{  2, "Token验证失败" },
-		{  4, "非法操作" },
-		{ 10,"日期格式错误" },
-		{ 11,"数据格式错误" },
-		{ 97,"没有权限" },
-		{ 98,"操作失败" },
-		{ 99,"未知错误" },
-		{ 100,"账号被锁定" },
-		{ 101,"账号格式错误" },
-		{ 102,"账号不存在" },
-		{ 103,"此账号被占用" },
-		{ 104,"密码格式错误" },
-		{ 105,"密码错误" },
-		{ 106,"新旧密码相同" },
-		{ 107,"会员账号不可用" },
-		{ 108,"登入失败" },
-		{ 109,"注册失败" },
-		{ 113,"传入的代理账号不是代理" },
-		{ 114,"找不到会员" },
-		{ 116,"账号已占用" },
-		{ 117,"找不到会员所属的分公司" },
-		{ 118,"找不到指定的代理" },
-		{ 119,"存取款操作时代理点数不足" },
-		{ 120,"余额不足" },
-		{ 121,"盈利限制必须大于或等于0" },
-		{ 150,"免费试玩账号用完" },
-		{ 300,"系统维护" },
-		{ 301,"代理账号找不到" },
-		{ 320,"API Key 错误" },
-		{ 321,"找不到相应的限红组" },
-		{ 322,"找不到指定的货币类型" },
-		{ 323,"转账流水号占用" },
-		{ 324,"转账失败" },
-		{ 325,"代理状态不可用" },
-		{ 326,"会员代理没有视频组" },
-		{ 328,"API 类型找不到" },
-		{ 329,"会员代理信息不完整" },
-		{ 400,"客户端IP 受限" },
-		{ 401,"网络延迟" },
-		{ 402,"连接关闭" },
-		{ 403,"客户端来源受限" },
-		{ 404,"请求的资源不存在" },
-		{ 405,"请求太频繁" },
-		{ 406,"请求超时" },
-		{ 407,"找不到游戏地址" },
-		{ 500,"空指针异常" },
-		{ 501,"系统异常" },
-		{ 502,"系统忙" },
-		{ 503,"数据操作异常" },
-	};
-
 	public async ValueTask SignUpAsync(
 		Uri apiUrl,
 		string apiKey,
@@ -103,7 +49,7 @@ internal class GameApiClient(
 		var jsonNode = await PostAsync(
 			url,
 			JsonDocument.Parse(JsonSerializer.Serialize(request)),
-			"SignUp",
+			nameof(SignUpAsync),
 			cancellationToken).ConfigureAwait(false);
 
 		var codeId = jsonNode!["codeId"]!.GetValue<int>();
@@ -112,8 +58,7 @@ internal class GameApiClient(
 		{
 			if (codeId != 116)
 			{
-				_ = _codeIdDescription.TryGetValue(codeId, out var codeIdDescription);
-				throw new GameProviderResponseErrorException(codeId, codeIdDescription);
+				throw new GameInterfaceException(codeId);
 			}
 		}
 	}
@@ -149,15 +94,14 @@ internal class GameApiClient(
 		var jsonNode = await PostAsync(
 			url,
 			JsonDocument.Parse(JsonSerializer.Serialize(request)),
-			"Login",
+			nameof(LoginAsync),
 			cancellationToken).ConfigureAwait(false);
 
 		var codeId = jsonNode!["codeId"]!.GetValue<int>();
 
 		if (codeId is not 0)
 		{
-			_ = _codeIdDescription.TryGetValue(codeId, out var codeIdDescription);
-			throw new GameProviderResponseErrorException(codeId, codeIdDescription);
+			throw new GameInterfaceException(codeId);
 		}
 
 		var list = jsonNode!["list"]!.AsArray();
@@ -188,20 +132,16 @@ internal class GameApiClient(
 		var jsonNode = await PostAsync(
 			url,
 			JsonDocument.Parse(JsonSerializer.Serialize(request)),
-			"GetBalance",
+			nameof(GetBalanceAsync),
 			cancellationToken).ConfigureAwait(false);
 
 		var codeId = jsonNode!["codeId"]!.GetValue<int>();
 
 		if (codeId is not 0)
 		{
-			if (codeId is not 114)
-			{
-				_ = _codeIdDescription.TryGetValue(codeId, out var codeIdDescription);
-				throw new GameProviderResponseErrorException(codeId, codeIdDescription);
-			}
-
-			return new(false, 0);
+			return codeId is not 114
+				? throw new GameInterfaceException(codeId)
+				: new(false, 0);
 		}
 
 		var member = jsonNode!["member"]!.AsObject();
@@ -240,15 +180,14 @@ internal class GameApiClient(
 		var jsonNode = await PostAsync(
 			url,
 			JsonDocument.Parse(JsonSerializer.Serialize(request)),
-			"Transfer",
+			nameof(TransferAsync),
 			cancellationToken).ConfigureAwait(false);
 
 		var codeId = jsonNode!["codeId"]!.GetValue<int>();
 
 		if (codeId is not 0)
 		{
-			_ = _codeIdDescription.TryGetValue(codeId, out var codeIdDescription);
-			throw new GameProviderResponseErrorException(codeId, codeIdDescription);
+			throw new GameInterfaceException(codeId);
 		}
 
 		var transactionId = jsonNode!["data"]!.ToString();
@@ -257,7 +196,11 @@ internal class GameApiClient(
 
 		var balance = member["balance"]!.GetValue<decimal>();
 
-		return new TransferResult(refTransactionCode, transactionId, balance);
+		return new TransferResult(
+			RefTransactionCode: refTransactionCode,
+			TransactionId: transactionId,
+			Balance: balance,
+			Resp: jsonNode.ToJsonString());
 	}
 
 	public async ValueTask<bool> CheckTransferAsync(
@@ -282,7 +225,7 @@ internal class GameApiClient(
 		var jsonNode = await PostAsync(
 			url,
 			JsonDocument.Parse(JsonSerializer.Serialize(request)),
-			"CheckTransfer",
+			nameof(CheckTransferAsync),
 			cancellationToken).ConfigureAwait(false);
 
 		var codeId = jsonNode!["codeId"]!.GetValue<int>();
@@ -326,16 +269,17 @@ internal class GameApiClient(
 
 		var jsonNode = await retryPolicy.ExecuteAsync(async ()
 			=> await PostAsync(
-				url,
-				JsonDocument.Parse(JsonSerializer.Serialize(request)),
-				"GetReport").ConfigureAwait(false)).ConfigureAwait(false);
+				apiUrl: url,
+				request: JsonDocument.Parse(JsonSerializer.Serialize(request)),
+				logPrefix: nameof(GetReportAsync))
+			.ConfigureAwait(false))
+			.ConfigureAwait(false);
 
 		var codeId = jsonNode!["codeId"]!.GetValue<int>();
 
 		if (codeId is not 0)
 		{
-			_ = _codeIdDescription.TryGetValue(codeId, out var codeIdDescription);
-			throw new GameProviderResponseErrorException(codeId, codeIdDescription);
+			throw new GameInterfaceException(codeId);
 		}
 
 		if (jsonNode["list"] == null)
@@ -374,7 +318,7 @@ internal class GameApiClient(
 				x["winOrLoss"]!.GetValue<decimal>(),
 			ExternalGameId = x["tableId"]!.ToString(),
 			AdditionalData = x.ToString(),
-		}) ?? Enumerable.Empty<GetReportResult>();
+		}) ?? [];
 
 		if (!betResults.Any())
 		{
@@ -446,7 +390,7 @@ internal class GameApiClient(
 			 => await PostAsync(
 				 url,
 				 JsonDocument.Parse(JsonSerializer.Serialize(request)),
-				 "MarkReport").ConfigureAwait(false)).ConfigureAwait(false);
+				 nameof(MarkReportAsync)).ConfigureAwait(false)).ConfigureAwait(false);
 
 		return jsonNode["codeId"]!.GetValue<int>() == 0;
 	}
@@ -489,14 +433,13 @@ internal class GameApiClient(
 			=> await PostAsync(
 				url,
 				JsonDocument.Parse(JsonSerializer.Serialize(request)),
-				"OnlineReport").ConfigureAwait(false)).ConfigureAwait(false);
+				nameof(OnlineReportAsync)).ConfigureAwait(false)).ConfigureAwait(false);
 
 		var codeId = jsonNode["codeId"]!.GetValue<int>();
 
 		if (codeId is not 0)
 		{
-			_ = _codeIdDescription.TryGetValue(codeId, out var codeIdDescription);
-			throw new GameProviderResponseErrorException(codeId, codeIdDescription);
+			throw new GameInterfaceException(codeId);
 		}
 
 		if (jsonNode["list"] == null)
@@ -508,7 +451,7 @@ internal class GameApiClient(
 		{
 			PlayerCode = x!["username"]!.ToString().ToLower(),
 			MemberId = x["memberId"]!.GetValue<long>(),
-		}) ?? Enumerable.Empty<OnlineReportResult>();
+		}) ?? [];
 
 		if (!onlineList.Any())
 		{
@@ -561,7 +504,7 @@ internal class GameApiClient(
 			 => await PostAsync(
 				 url,
 				 JsonDocument.Parse(JsonSerializer.Serialize(request)),
-				 "Offline").ConfigureAwait(false)).ConfigureAwait(false);
+				 nameof(OfflineAsync)).ConfigureAwait(false)).ConfigureAwait(false);
 
 		return response["codeId"]!.GetValue<int>() == 0;
 	}
@@ -590,7 +533,7 @@ internal class GameApiClient(
 		var jsonNode = await PostAsync(
 			url,
 			JsonDocument.Parse(JsonSerializer.Serialize(request)),
-			"UpdateLimit",
+			nameof(UpdateLimitAsync),
 			cancellationToken).ConfigureAwait(false);
 
 		var codeId = jsonNode!["codeId"]!.GetValue<int>();
@@ -607,13 +550,12 @@ internal class GameApiClient(
 
 	private async ValueTask<JsonNode> PostAsync(Uri apiUrl, JsonDocument request, string logPrefix, CancellationToken cancellationToken = default)
 	{
-		logPrefix = $"{nameof(GameApiClient)}.{logPrefix}".ToLower();
+		HttpContent content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
 
 		var sw = Stopwatch.StartNew();
 
-		HttpContent content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
-
 		var httpResponseMessage = await client.PostAsync(apiUrl, content, cancellationToken).ConfigureAwait(false);
+
 		sw.Stop();
 
 		var responseMessage = default(string);
@@ -622,7 +564,7 @@ internal class GameApiClient(
 			responseMessage = await sr.ReadToEndAsync(cancellationToken: cancellationToken).ConfigureAwait(false) ?? string.Empty;
 		}
 
-		var apiLogEvent = new GameApiLogEvent
+		var apiLogEvent = new
 		{
 			Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
 			Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,

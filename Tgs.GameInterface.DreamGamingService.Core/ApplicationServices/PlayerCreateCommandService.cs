@@ -10,7 +10,7 @@ internal class PlayerCreateCommandService(
 			apiUrl: command.ApiUrl,
 			apiKey: command.ApiKey,
 			agentName: command.AgentName,
-			username: command.Username,
+			username: command.PlayerCode,
 			password: command.Password,
 			currencyName: command.CurrencyName,
 			tableLimit: command.TableLimit,

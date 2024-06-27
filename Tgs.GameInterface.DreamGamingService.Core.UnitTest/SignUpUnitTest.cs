@@ -96,7 +96,7 @@ public class SignUpUnitTest
 		var sut = new GameApiClient(fakeHttpClient, fakeLog);
 
 		_ = await Assert
-			.ThrowsExceptionAsync<GameProviderResponseErrorException>(() =>
+			.ThrowsExceptionAsync<GameInterfaceException>(() =>
 				sut.SignUpAsync(
 					apiUrl: apiUrl,
 					apiKey: apiKey,

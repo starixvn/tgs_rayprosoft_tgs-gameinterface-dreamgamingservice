@@ -4,7 +4,7 @@ public record PlayerCreateCommand(
 	Uri ApiUrl,
 	string ApiKey,
 	string AgentName,
-	string Username,
+	string PlayerCode,
 	string Password,
 	string CurrencyName,
 	string TableLimit = "A",

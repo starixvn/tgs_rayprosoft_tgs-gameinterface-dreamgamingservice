@@ -9,7 +9,7 @@ internal class GameUrlGetService(IGameApiClient client) : IGetService<GameUrlQue
 			query.ApiUrl,
 			query.ApiKey,
 			query.AgentName,
-			query.Username,
+			query.PlayerCode,
 			query.Password,
 			query.IsMobile,
 			query.Lang,

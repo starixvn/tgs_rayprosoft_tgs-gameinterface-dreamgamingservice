@@ -4,4 +4,4 @@ public record GameRoundDetailQuery(
 	Uri VideoGameApiUrl,
 	string AgentName,
 	string Language,
-	string Id);
+	string ExternalRoundId);

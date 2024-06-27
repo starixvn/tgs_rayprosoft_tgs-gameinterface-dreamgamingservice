@@ -22,15 +22,15 @@ internal class GameInterfaceDreamGamingClient(
 		return reply.MachineName;
 	}
 
-	public async ValueTask<FundReply> FundInAsync(Uri apiUrl, string apiKey, string agentName, string username, string refTransactionCode, decimal amount, CancellationToken cancellationToken = default)
+	public async ValueTask<FundReply> FundInAsync(Uri apiUrl, string apiKey, string agentName, string playerCode, string orderId, decimal amount, CancellationToken cancellationToken = default)
 	{
 		var request = new FundRequest
 		{
 			ApiUrl = apiUrl.ToString(),
 			ApiKey = apiKey,
 			AgentName = agentName,
-			Username = username,
-			RefTransactionCode = refTransactionCode,
+			PlayerCode = playerCode,
+			OrderId = orderId,
 			Amount = amount,
 		};
 
@@ -41,15 +41,15 @@ internal class GameInterfaceDreamGamingClient(
 			.ConfigureAwait(false);
 	}
 
-	public async ValueTask<FundReply> FundOutAsync(Uri apiUrl, string apiKey, string agentName, string username, string refTransactionCode, decimal amount, CancellationToken cancellationToken = default)
+	public async ValueTask<FundReply> FundOutAsync(Uri apiUrl, string apiKey, string agentName, string playerCode, string orderId, decimal amount, CancellationToken cancellationToken = default)
 	{
 		var request = new FundRequest
 		{
 			ApiUrl = apiUrl.ToString(),
 			ApiKey = apiKey,
 			AgentName = agentName,
-			Username = username,
-			RefTransactionCode = refTransactionCode,
+			PlayerCode = playerCode,
+			OrderId = orderId,
 			Amount = amount,
 		};
 
@@ -60,14 +60,14 @@ internal class GameInterfaceDreamGamingClient(
 			.ConfigureAwait(false);
 	}
 
-	public async ValueTask<FundStatusReply> FundStatusAsync(Uri apiUrl, string apiKey, string agentName, string refTransactionCode, CancellationToken cancellationToken = default)
+	public async ValueTask<FundStatusReply> FundStatusAsync(Uri apiUrl, string apiKey, string agentName, string orderId, CancellationToken cancellationToken = default)
 	{
 		var request = new FundStatusRequest
 		{
 			ApiUrl = apiUrl.ToString(),
 			ApiKey = apiKey,
 			AgentName = agentName,
-			RefTransactionCode = refTransactionCode,
+			OrderId = orderId,
 		};
 
 		return await client
@@ -77,14 +77,14 @@ internal class GameInterfaceDreamGamingClient(
 			.ConfigureAwait(false);
 	}
 
-	public async ValueTask<GameHistoryDetailReply> GameHistoryDetailAsync(Uri videoGameApiUrl, string agentName, string language, string id, CancellationToken cancellationToken = default)
+	public async ValueTask<GameHistoryDetailReply> GameHistoryDetailAsync(Uri videoGameApiUrl, string agentName, string language, string externalRoundId, CancellationToken cancellationToken = default)
 	{
 		var request = new GameHistoryDetailRequest
 		{
 			VideoGameApiUrl = videoGameApiUrl.ToString(),
 			AgentName = agentName,
 			Language = language,
-			Id = id,
+			ExternalRoundId = externalRoundId,
 		};
 
 		return await client
@@ -142,14 +142,14 @@ internal class GameInterfaceDreamGamingClient(
 		}
 	}
 
-	public async ValueTask<GameUrlReply> GameUrlAsync(Uri apiUrl, string apiKey, string agentName, string username, string password, bool isMobile, string lang, CancellationToken cancellationToken = default)
+	public async ValueTask<GameUrlReply> GameUrlAsync(Uri apiUrl, string apiKey, string agentName, string playerCode, string password, bool isMobile, string lang, CancellationToken cancellationToken = default)
 	{
 		var request = new GameUrlRequest
 		{
 			ApiUrl = apiUrl.ToString(),
 			ApiKey = apiKey,
 			AgentName = agentName,
-			Username = username,
+			PlayerCode = playerCode,
 			Password = password,
 			IsMobile = isMobile,
 			Lang = lang,
@@ -162,14 +162,14 @@ internal class GameInterfaceDreamGamingClient(
 			.ConfigureAwait(false);
 	}
 
-	public async ValueTask<PlayerBalanceReply> PlayerBalanceAsync(Uri apiUrl, string apiKey, string agentName, string username, CancellationToken cancellationToken = default)
+	public async ValueTask<PlayerBalanceReply> PlayerBalanceAsync(Uri apiUrl, string apiKey, string agentName, string playerCode, CancellationToken cancellationToken = default)
 	{
 		var request = new PlayerBalanceRequest
 		{
 			ApiUrl = apiUrl.ToString(),
 			ApiKey = apiKey,
 			AgentName = agentName,
-			Username = username,
+			PlayerCode = playerCode,
 		};
 
 		return await client
@@ -179,14 +179,14 @@ internal class GameInterfaceDreamGamingClient(
 			.ConfigureAwait(false);
 	}
 
-	public async ValueTask PlayerCreateAsync(Uri apiUrl, string apiKey, string agentName, string username, string password, string currencyName, string tableLimit, int winLimit, CancellationToken cancellationToken = default)
+	public async ValueTask PlayerCreateAsync(Uri apiUrl, string apiKey, string agentName, string playerCode, string password, string currencyName, string tableLimit, int winLimit, CancellationToken cancellationToken = default)
 	{
 		var request = new PlayerCreateRequest
 		{
 			ApiUrl = apiUrl.ToString(),
 			ApiKey = apiKey,
 			AgentName = agentName,
-			Username = username,
+			PlayerCode = playerCode,
 			Password = password,
 			CurrencyName = currencyName,
 			TableLimit = tableLimit,
@@ -202,7 +202,7 @@ internal class GameInterfaceDreamGamingClient(
 
 	public async ValueTask PlayerKickAsync(Uri apiUrl, string apiKey, string agentName, long memberId, CancellationToken cancellationToken = default)
 	{
-		var request = new PlayerKickRequest
+		var request = new PlayerLogoutRequest
 		{
 			ApiUrl = apiUrl.ToString(),
 			ApiKey = apiKey,
@@ -210,14 +210,13 @@ internal class GameInterfaceDreamGamingClient(
 			MemberId = memberId
 		};
 
-		_ = await client
-			.PlayerKickAsync(
-				request: request,
-				cancellationToken: cancellationToken)
+		_ = await client.PlayerLogoutAsync(
+			request: request,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 	}
 
-	public async IAsyncEnumerable<PlayerOnline> PlayerOnlineAsync(Uri apiUrl, string apiKey, string agentName, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+	public async IAsyncEnumerable<PlayerOnline> PlayerOnlineListAsync(Uri apiUrl, string apiKey, string agentName, [EnumeratorCancellation] CancellationToken cancellationToken = default)
 	{
 		var request = new PlayerOnlineRequest()
 		{

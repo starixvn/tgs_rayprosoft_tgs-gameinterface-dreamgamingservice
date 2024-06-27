@@ -4,4 +4,4 @@ public record PlayerBalanceQuery(
 	Uri ApiUrl,
 	string ApiKey,
 	string AgentName,
-	string Username);
+	string PlayerCode);

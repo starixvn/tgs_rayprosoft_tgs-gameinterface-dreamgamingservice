@@ -6,5 +6,5 @@ internal class PlayerTableLimitGetService(
 	IGameApiClient client) : IGetService<PlayerTableLimitCommand, bool>
 {
 	public ValueTask<bool> GetAsync(PlayerTableLimitCommand query, CancellationToken cancellationToken = default)
-		=> client.UpdateLimitAsync(query.ApiUrl, query.ApiKey, query.AgentName, query.Username, query.TableLimit, cancellationToken);
+		=> client.UpdateLimitAsync(query.ApiUrl, query.ApiKey, query.AgentName, query.PlayerCode, query.TableLimit, cancellationToken);
 }

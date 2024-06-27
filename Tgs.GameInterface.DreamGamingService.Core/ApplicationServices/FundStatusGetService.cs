@@ -9,6 +9,6 @@ internal class FundStatusGetService(IGameApiClient client) : IGetService<FundSta
 			apiUrl: command.ApiUrl,
 			apiKey: command.ApiKey,
 			agentName: command.AgentName,
-			refTransactionCode: command.RefTransactionCode,
+			refTransactionCode: command.OrderId,
 			cancellationToken: cancellationToken);
 }

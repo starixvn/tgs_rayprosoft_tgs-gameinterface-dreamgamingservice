@@ -338,14 +338,38 @@ internal class GameApiClient(
 		string id,
 		CancellationToken cancellationToken = default)
 	{
+		var sw = Stopwatch.StartNew();
+
 		var httpResponseMessage = await client
 			.GetAsync($"{videoGameApiUrl?.ToString()}ag/result/getAgentFix.html?username={agentName}", cancellationToken)
 			.ConfigureAwait(false);
 
-		using var sr = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken).Result);
-		var response = await sr.ReadToEndAsync(cancellationToken: cancellationToken).ConfigureAwait(false) ?? string.Empty;
+		sw.Stop();
 
-		var agentFix = JsonSerializer.Deserialize<string>(response);
+		var responseMessage = default(string);
+		using (var sr = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken).Result))
+		{
+			responseMessage = await sr.ReadToEndAsync(cancellationToken: cancellationToken).ConfigureAwait(false) ?? string.Empty;
+		}
+
+		var apiLogEvent = new
+		{
+			Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
+			Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,
+			Prefix = nameof(GetGameResultAsync),
+			ServerName = Environment.MachineName.NoLongerThan(128),
+			RequestHeaders = httpResponseMessage.RequestMessage?.Headers + httpResponseMessage.RequestMessage?.Content?.Headers?.ToString(),
+			RequestContent = string.Empty,
+			ResponseHeaders = httpResponseMessage.Headers.ToString(),
+			ResponseContent = responseMessage,
+			ResponseCode = (short)httpResponseMessage.StatusCode,
+			ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
+			RecordedOn = DateTimeOffset.UtcNow
+		};
+
+		logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
+
+		var agentFix = JsonSerializer.Deserialize<string>(responseMessage);
 
 		return $"{videoGameApiUrl?.ToString()}ag/result/result.html?language={language}&agentFix={agentFix}&id={id}";
 	}

@@ -16,7 +16,7 @@ public interface IGameInterfaceDreamGamingClient
 
 	ValueTask<PlayerBalanceReply> PlayerBalanceAsync(Uri apiUrl, string apiKey, string agentName, string playerCode, CancellationToken cancellationToken = default);
 
-	ValueTask PlayerKickAsync(Uri apiUrl, string apiKey, string agentName, long memberId, CancellationToken cancellationToken = default);
+	ValueTask PlayerLogoutAsync(Uri apiUrl, string apiKey, string agentName, long memberId, CancellationToken cancellationToken = default);
 
 	IAsyncEnumerable<PlayerOnline> PlayerOnlineListAsync(Uri apiUrl, string apiKey, string agentName, CancellationToken cancellationToken = default);
 

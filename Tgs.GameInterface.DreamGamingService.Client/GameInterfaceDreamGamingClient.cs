@@ -200,7 +200,7 @@ internal class GameInterfaceDreamGamingClient(
 			.ConfigureAwait(false);
 	}
 
-	public async ValueTask PlayerKickAsync(Uri apiUrl, string apiKey, string agentName, long memberId, CancellationToken cancellationToken = default)
+	public async ValueTask PlayerLogoutAsync(Uri apiUrl, string apiKey, string agentName, long memberId, CancellationToken cancellationToken = default)
 	{
 		var request = new PlayerLogoutRequest
 		{

@@ -12,6 +12,7 @@ public record GetReportResult
 	public decimal ValidBet { get; init; }
 	public decimal Settle { get; init; }
 	public string AdditionalData { get; init; } = default!;
-
 	public string ExternalGameId { get; init; } = default!;
+	public string GameType { get; init; } = default!;
+	public string GameId { get; init; } = default!;
 };

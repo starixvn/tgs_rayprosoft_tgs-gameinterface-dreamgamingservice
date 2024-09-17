@@ -26,7 +26,7 @@ internal class GameHistorySettledQueryService(
 		foreach (var bettingHistoryBet in bettingHistoryBets)
 		{
 			var playerWinLoss = 0.0m;
-			if (bettingHistoryBet.IsClosed && !bettingHistoryBet.IsVoid)
+			if (bettingHistoryBet.IsClosed && !bettingHistoryBet.IsVoid && bettingHistoryBet.GameType == "1")
 			{
 				playerWinLoss = bettingHistoryBet.Settle - bettingHistoryBet.Bet;
 			}

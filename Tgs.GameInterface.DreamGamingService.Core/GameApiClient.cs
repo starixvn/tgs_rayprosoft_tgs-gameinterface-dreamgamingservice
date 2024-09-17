@@ -329,7 +329,9 @@ internal class GameApiClient(
 				ExternalGameId = x["gameType"]!.ToString() == "2" && (x["gameId"]!.ToString() == "2" || x["gameId"]!.ToString() == "5")
 				? string.Concat(x["gameType"]!.ToString(), "_", x["gameId"]!.ToString())
 				: x["tableId"]!.ToString(),
-				AdditionalData = x.ToString(),
+				GameType = x["gameType"]!.ToString(),
+				GameId = x["gameId"]!.ToString(),
+				AdditionalData = x.ToString()
 			}) ?? [];
 
 		if (!betResults.Any())

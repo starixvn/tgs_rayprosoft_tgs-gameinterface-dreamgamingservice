@@ -12,7 +12,6 @@ public class GetReportUnitTest
 {
 	[TestMethod]
 	public async Task GameType_Is_1_Win()
-
 	{
 		var apiUrl = new Uri("https://api.dg0.co/");
 		var apiKey = "d39da9da731b427b9349b80d9d97f2e4";
@@ -86,11 +85,12 @@ public class GetReportUnitTest
 		Assert.AreEqual(200.0m, actual.First().Settle);
 		Assert.IsNotNull(actual.First().AdditionalData);
 		Assert.AreEqual("30102", actual.First().ExternalGameId);
+		Assert.AreEqual("1", actual.First().GameType);
+		Assert.AreEqual("1", actual.First().GameId);
 	}
 
 	[TestMethod]
 	public async Task GameType_Is_1_Loss()
-
 	{
 		var apiUrl = new Uri("https://api.dg0.co/");
 		var apiKey = "d39da9da731b427b9349b80d9d97f2e4";
@@ -164,6 +164,8 @@ public class GetReportUnitTest
 		Assert.AreEqual(0.0m, actual.First().Settle);
 		Assert.IsNotNull(actual.First().AdditionalData);
 		Assert.AreEqual("94103", actual.First().ExternalGameId);
+		Assert.AreEqual("1", actual.First().GameType);
+		Assert.AreEqual("41", actual.First().GameId);
 	}
 
 	[TestMethod]
@@ -229,6 +231,8 @@ public class GetReportUnitTest
 		Assert.AreEqual(10.0m, actual.First().Settle);
 		Assert.IsNotNull(actual.First().AdditionalData);
 		Assert.AreEqual("2_2", actual.First().ExternalGameId);
+		Assert.AreEqual("2", actual.First().GameType);
+		Assert.AreEqual("2", actual.First().GameId);
 	}
 
 	[TestMethod]
@@ -294,5 +298,7 @@ public class GetReportUnitTest
 		Assert.AreEqual(37.3m, actual.First().Settle);
 		Assert.IsNotNull(actual.First().AdditionalData);
 		Assert.AreEqual("2_5", actual.First().ExternalGameId);
+		Assert.AreEqual("2", actual.First().GameType);
+		Assert.AreEqual("5", actual.First().GameId);
 	}
 }

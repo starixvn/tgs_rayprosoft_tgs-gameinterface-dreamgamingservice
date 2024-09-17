@@ -290,35 +290,47 @@ internal class GameApiClient(
 		if (listArray is null || listArray.Count == 0)
 			yield break;
 
-		var betResults = listArray.Select(x => new GetReportResult
-		{
-			//会员登入账号
-			PlayerCode = x!["userName"]!.ToString(),
-			//注单唯一Id
-			ExternalRoundId = x["id"]!.ToString(),
-			//是否结算：0:未結算 1：已结算 2:撤销 3:凍結
-			IsClosed = x["isRevocation"]!.GetValue<int>() is 1 or 3,
-			//是否作廢：0:未結算 1：已结算 2:撤销 3:凍結
-			IsVoid = x["isRevocation"]!.GetValue<int>() == 2,
-			//游戏下注时间
-			ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(x["betTime"]!.ToString()), TimeSpan.FromHours(8D)),
-			//游戏结算时间
-			ExternalClosedOn = x["calTime"] is not null
+		var betResults = listArray
+			.Select(x => new GetReportResult
+			{
+				//会员登入账号
+				PlayerCode = x!["userName"]!.ToString(),
+				//注单唯一Id
+				ExternalRoundId = x["id"]!.ToString(),
+				//是否结算：0:未結算 1：已结算 2:撤销 3:凍結
+				IsClosed = x["isRevocation"]!.GetValue<int>() is 1 or 3,
+				//是否作廢：0:未結算 1：已结算 2:撤销 3:凍結
+				IsVoid = x["isRevocation"]!.GetValue<int>() == 2,
+				//游戏下注时间
+				ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(x["betTime"]!.ToString()), TimeSpan.FromHours(8D)),
+				//游戏结算时间
+				ExternalClosedOn = x["calTime"] is not null
 				? new DateTimeOffset(DateTime.Parse(x["calTime"]!.ToString()), TimeSpan.FromHours(8D))
+				: x["gameType"]!.ToString() == "2" && (x["gameId"]!.ToString() == "2" || x["gameId"]!.ToString() == "5")
+				? new DateTimeOffset(DateTime.Parse(x["betTime"]!.ToString()), TimeSpan.FromHours(8D))
 				: DateTimeOffset.UnixEpoch,
-			//下注金额
-			Bet = x["betPoints"]!.GetValue<decimal>(),
-			//有效下注金额
-			ValidBet = x["availableBet"] == null
-				? 0
-				: x["availableBet"]!.GetValue<decimal>(),
-			//派彩金额 (输赢应扣除下注金额)
-			Settle = x["winOrLoss"] == null
-				? 0 :
-				x["winOrLoss"]!.GetValue<decimal>(),
-			ExternalGameId = x["tableId"]!.ToString(),
-			AdditionalData = x.ToString(),
-		}) ?? [];
+				//下注金额
+				Bet = x["gameType"]!.ToString() == "2" && (x["gameId"]!.ToString() == "2" || x["gameId"]!.ToString() == "5")
+					? 0.0m
+					: x["betPoints"]!.GetValue<decimal>(),
+				//有效下注金额
+				ValidBet = x["gameType"]!.ToString() == "2" && (x["gameId"]!.ToString() == "2" || x["gameId"]!.ToString() == "5")
+				? 0.0m
+				: x["availableBet"] == null
+					? 0
+					: x["availableBet"]!.GetValue<decimal>(),
+				//派彩金额 (输赢应扣除下注金额)
+				Settle =
+				x["gameType"]!.ToString() == "2" && (x["gameId"]!.ToString() == "2" || x["gameId"]!.ToString() == "5")
+				? x["betPoints"]!.GetValue<decimal>()
+				: x["winOrLoss"] == null
+					? 0 :
+					x["winOrLoss"]!.GetValue<decimal>(),
+				ExternalGameId = x["gameType"]!.ToString() == "2" && (x["gameId"]!.ToString() == "2" || x["gameId"]!.ToString() == "5")
+				? string.Concat(x["gameType"]!.ToString(), "_", x["gameId"]!.ToString())
+				: x["tableId"]!.ToString(),
+				AdditionalData = x.ToString(),
+			}) ?? [];
 
 		if (!betResults.Any())
 		{
